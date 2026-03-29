@@ -60,8 +60,8 @@ export default function Page() {
       {/* HERO */}
       <section className="max-w-6xl mx-auto mb-16">
         <h1 className="text-4xl md:text-6xl font-semibold leading-tight">
-          The Portfolio of the Kinetic{" "}
-          <span className="text-cyan-400">Monolith</span>
+          ACE Tech{" "}
+          <span className="text-cyan-400"> Hub</span>
         </h1>
 
         <p className="mt-6 text-slate-400 max-w-xl text-lg">
