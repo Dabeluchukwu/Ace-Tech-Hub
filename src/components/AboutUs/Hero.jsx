@@ -10,9 +10,9 @@ export default function Home() {
         </p>
 
         <h1 className="text-5xl md:text-7xl font-bold leading-tight max-w-4xl">
-          <span className="text-gray-300">Architect the </span>
+          <span className="text-gray-300">ACE </span>
           <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            Kinetic Monolith
+           Tech Hub
           </span>
         </h1>
 
