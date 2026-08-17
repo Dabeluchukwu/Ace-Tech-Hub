@@ -274,7 +274,7 @@ export default function Contact() {
                 <div>
                   <p className="text-sm font-medium">Message Sent Successfully!</p>
                   <p className="text-xs text-green-400/70 mt-0.5">
-                    We'll get back to you within 4 hours.
+                    We'll get back to you within 24 hours.
                   </p>
                 </div>
               </div>
@@ -300,7 +300,7 @@ export default function Contact() {
 
             <div className="mt-4 text-xs text-gray-400 flex items-center justify-center gap-2">
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-              AVERAGE RESPONSE TIME: 4 HOURS
+              AVERAGE RESPONSE TIME: WITHIN 24 HOURS
             </div>
           </form>
         </div>

@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+   images: {
+    loader: 'custom',
+    loaderFile: './src/lib/imageLoader.js',
+    domains: ['pub-xxxxxxxxxxxxxxxx.r2.dev'],
+  },
 };
 
 export default nextConfig;

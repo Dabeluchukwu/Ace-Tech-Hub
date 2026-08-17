@@ -144,13 +144,38 @@ export const getDashboardStats = async () => {
 };
 
 
-// ============ UPLOAD ============
-export const uploadImage = async (imageData) => {
-  const response = await apiClient.post('/api/upload', { image: imageData });
-  return response.data;
+// // ============ UPLOAD CLOUDINARY ============
+// export const uploadImage = async (imageData) => {
+//   const response = await apiClient.post('/api/upload', { image: imageData });
+//   return response.data;
+// };
+
+// export const deleteImage = async (publicId) => {
+//   const response = await apiClient.delete(`/api/upload/${publicId}`);
+//   return response.data;
+// };
+
+// ============ UPLOAD CLOUDFLARE R2 ============
+export const uploadImage = async (imageData, filename, folder = 'blog') => {
+  try {
+    const response = await apiClient.post('/api/upload', {
+      image: imageData,
+      filename: filename,
+      folder: folder,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('❌ R2 upload error:', error);
+    throw error;
+  }
 };
 
-export const deleteImage = async (publicId) => {
-  const response = await apiClient.delete(`/api/upload/${publicId}`);
-  return response.data;
+export const deleteImage = async (key) => {
+  try {
+    const response = await apiClient.delete(`/api/upload/${key}`);
+    return response.data;
+  } catch (error) {
+    console.error('❌ R2 delete error:', error);
+    throw error;
+  }
 };
