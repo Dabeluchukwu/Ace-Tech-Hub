@@ -18,7 +18,7 @@ export default function ServicesGrid() {
   return (
     <div className="max-w-6xl mx-auto">
       {/* SERVICE 1 - Web Development */}
-      <section className="mb-20">
+      <section id="web-development" className="mb-20 scroll-mt-20"> {/* ✅ Added ID */}
         <div className="grid md:grid-cols-5 gap-8 items-start">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
@@ -81,7 +81,7 @@ export default function ServicesGrid() {
       </section>
 
       {/* SERVICE 2 - Consultancy */}
-      <section className="mb-20 bg-[#1a2438]/30 rounded-3xl p-8 md:p-12 border border-cyan-400/10">
+      <section id="consultancy" className="mb-20 bg-[#1a2438]/30 rounded-3xl p-8 md:p-12 border border-cyan-400/10 scroll-mt-20"> {/* ✅ Added ID */}
         <div className="grid md:grid-cols-5 gap-8 items-start">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
@@ -152,7 +152,7 @@ export default function ServicesGrid() {
       </section>
 
       {/* SERVICE 3 - Full Stack */}
-      <section className="mb-20">
+      <section id="full-stack" className="mb-20 scroll-mt-20"> {/* ✅ Added ID */}
         <div className="grid md:grid-cols-5 gap-8 items-start">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
@@ -223,7 +223,7 @@ export default function ServicesGrid() {
       </section>
 
       {/* SERVICE 4 - Cloud Architecture */}
-      <section className="bg-[#1a2438]/30 rounded-3xl p-8 md:p-12 border border-white/5">
+      <section id="cloud-architecture" className="bg-[#1a2438]/30 rounded-3xl p-8 md:p-12 border border-white/5 scroll-mt-20"> {/* ✅ Added ID */}
         <div className="grid md:grid-cols-5 gap-8 items-start">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">

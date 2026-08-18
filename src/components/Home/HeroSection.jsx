@@ -2,92 +2,188 @@
 
 import { Rocket, Compass, Layers, ArrowRight, CheckCircle, Zap, Shield, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useState } from "react";
 
-export default function Home() {
+// Animation variants
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const fadeLeft = {
+  hidden: { opacity: 0, x: -50 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } }
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 50 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2,
+    }
+  }
+};
+
+export default function HeroSection() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <main className="bg-[#020c1b] text-white overflow-hidden">
       
       {/* HERO SECTION - Full Background Image */}
-      <section className="relative min-h-screen flex items-center">
+      <motion.section 
+        className="relative min-h-screen flex items-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
         {/* Background Image using CSS */}
-        <div 
+        <motion.div 
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: `url('/AceHomeHero.png')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 2, ease: "easeOut" }}
         >
           {/* Dark Overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#020c1b]/90 via-[#020c1b]/70 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#020c1b] via-transparent to-transparent" />
-        </div>
+        </motion.div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 w-full">
+        <motion.div 
+          className="relative z-10 max-w-7xl mx-auto px-6 py-20 w-full"
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             
             {/* LEFT - Content */}
-            <div className="max-w-xl">
-              <span className="inline-block text-xs tracking-[0.3em] text-cyan-400 uppercase border border-cyan-400/30 px-4 py-2 rounded-full mb-6">
+            <motion.div className="max-w-xl" variants={fadeLeft}>
+              <motion.span 
+                className="inline-block text-xs tracking-[0.3em] text-cyan-400 uppercase border border-cyan-400/30 px-4 py-2 rounded-full mb-6"
+                variants={fadeUp}
+              >
                 Engineering the Future
-              </span>
+              </motion.span>
 
-              <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
+              <motion.h1 
+                className="text-5xl lg:text-7xl font-bold leading-tight"
+                variants={fadeUp}
+              >
                 <span className="text-gray-200">ACE</span>{" "}
                 <span className="text-cyan-400">TECH</span>
                 <br />
                 <span className="text-cyan-400">HUB</span>
-              </h1>
+              </motion.h1>
 
-              <p className="mt-6 text-gray-300 text-lg leading-relaxed max-w-lg">
+              <motion.p 
+                className="mt-6 text-gray-300 text-lg leading-relaxed max-w-lg"
+                variants={fadeUp}
+              >
                 Your Partner in Digital Innovation. We engineer scalable,
                 high-performance web solutions for the modern era.
-              </p>
+              </motion.p>
 
               {/* Trust Badges */}
-              <div className="mt-6 flex flex-wrap gap-4">
-                <div className="flex items-center gap-2 text-sm text-gray-400">
+              <motion.div 
+                className="mt-6 flex flex-wrap gap-4"
+                variants={fadeUp}
+              >
+                <motion.div 
+                  className="flex items-center gap-2 text-sm text-gray-400"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.4 }}
+                >
                   <CheckCircle size={16} className="text-cyan-400" />
                   <span>50+ Projects</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-400">
+                </motion.div>
+                <motion.div 
+                  className="flex items-center gap-2 text-sm text-gray-400"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.4 }}
+                >
                   <CheckCircle size={16} className="text-cyan-400" />
                   <span>30+ Clients</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-400">
+                </motion.div>
+                <motion.div 
+                  className="flex items-center gap-2 text-sm text-gray-400"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.4 }}
+                >
                   <CheckCircle size={16} className="text-cyan-400" />
                   <span>99.9% Uptime</span>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
 
               {/* CTA Buttons */}
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 text-black font-medium hover:opacity-90 transition hover:scale-105 duration-300 shadow-lg shadow-cyan-500/25"
+              <motion.div 
+                className="mt-8 flex flex-wrap gap-4"
+                variants={fadeUp}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  Get a Consultation
-                  <ArrowRight size={18} />
-                </Link>
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 text-black font-medium hover:opacity-90 transition hover:scale-105 duration-300 shadow-lg shadow-cyan-500/25"
+                  >
+                    Get a Consultation
+                    <ArrowRight size={18} />
+                  </Link>
+                </motion.div>
 
-                <Link
-                  href="/services"
-                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10 transition hover:scale-105 duration-300"
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  Explore Services
-                </Link>
-              </div>
-            </div>
+                  <Link
+                    href="/services"
+                    className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10 transition hover:scale-105 duration-300"
+                  >
+                    Explore Services
+                  </Link>
+                </motion.div>
+              </motion.div>
+            </motion.div>
 
             {/* RIGHT - Floating Stats Card */}
-            <div className="relative hidden lg:block">
-              <div className="bg-[#0b1a2d]/90 backdrop-blur-xl p-8 rounded-2xl border border-cyan-400/20 shadow-2xl max-w-sm ml-auto">
+            <motion.div 
+              className="relative hidden lg:block"
+              variants={fadeRight}
+            >
+              <motion.div 
+                className="bg-[#0b1a2d]/90 backdrop-blur-xl p-8 rounded-2xl border border-cyan-400/20 shadow-2xl max-w-sm ml-auto"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              >
                 <div className="space-y-6">
-                  <div className="flex items-center gap-4">
+                  <motion.div 
+                    className="flex items-center gap-4"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6, duration: 0.4 }}
+                  >
                     <div className="p-3 bg-cyan-500/10 rounded-xl">
                       <Zap className="text-cyan-400 w-6 h-6" />
                     </div>
@@ -95,8 +191,13 @@ export default function Home() {
                       <p className="text-2xl font-bold text-white">99.9%</p>
                       <p className="text-xs text-gray-400">Uptime Guarantee</p>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-4">
+                  </motion.div>
+                  <motion.div 
+                    className="flex items-center gap-4"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7, duration: 0.4 }}
+                  >
                     <div className="p-3 bg-cyan-500/10 rounded-xl">
                       <Shield className="text-cyan-400 w-6 h-6" />
                     </div>
@@ -104,8 +205,13 @@ export default function Home() {
                       <p className="text-2xl font-bold text-white">Enterprise</p>
                       <p className="text-xs text-gray-400">Grade Security</p>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-4">
+                  </motion.div>
+                  <motion.div 
+                    className="flex items-center gap-4"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.8, duration: 0.4 }}
+                  >
                     <div className="p-3 bg-cyan-500/10 rounded-xl">
                       <TrendingUp className="text-cyan-400 w-6 h-6" />
                     </div>
@@ -113,26 +219,37 @@ export default function Home() {
                       <p className="text-2xl font-bold text-white">10x</p>
                       <p className="text-xs text-gray-400">Performance Boost</p>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
                 
                 {/* Performance Badge */}
-                <div className="mt-6 p-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl border border-cyan-400/10">
+                <motion.div 
+                  className="mt-6 p-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl border border-cyan-400/10"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.9, duration: 0.5 }}
+                >
                   <p className="text-sm font-semibold text-white">
                     ⚡ Performance Optimization
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
                     Enterprise-grade edge computing for maximum speed
                   </p>
-                </div>
-              </div>
-            </div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
           </div>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       {/* SERVICES SECTION */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
+      <motion.section 
+        className="max-w-7xl mx-auto px-6 py-24"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="text-center mb-16">
           <p className="text-cyan-400 uppercase tracking-[0.3em] text-sm font-medium">
             Our Services
@@ -151,7 +268,11 @@ export default function Home() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {/* Card 1 */}
-          <div className="group bg-[#0b1a2d] p-8 rounded-2xl border border-transparent hover:border-cyan-400/30 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/5 hover:-translate-y-1">
+          <motion.div 
+            className="group bg-[#0b1a2d] p-8 rounded-2xl border border-transparent hover:border-cyan-400/30 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/5 hover:-translate-y-1"
+            whileHover={{ y: -8 }}
+            transition={{ duration: 0.2 }}
+          >
             <div className="p-3 bg-cyan-500/10 rounded-xl w-fit mb-4 group-hover:bg-cyan-500/20 transition">
               <Rocket className="text-cyan-400 w-6 h-6" />
             </div>
@@ -163,16 +284,20 @@ export default function Home() {
               Designed to grow with your business.
             </p>
             <Link 
-              href="/services/web-development"
+              href="/services#web-development"
               className="inline-flex items-center gap-2 mt-4 text-cyan-400 text-sm font-medium hover:gap-3 transition-all"
             >
               Learn More
               <ArrowRight size={14} />
             </Link>
-          </div>
+          </motion.div>
 
           {/* Card 2 - Highlighted */}
-          <div className="group bg-[#0b1a2d] p-8 rounded-2xl border border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.1)] hover:shadow-[0_0_40px_rgba(34,211,238,0.2)] transition-all duration-300 hover:-translate-y-1">
+          <motion.div 
+            className="group bg-[#0b1a2d] p-8 rounded-2xl border border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.1)] hover:shadow-[0_0_40px_rgba(34,211,238,0.2)] transition-all duration-300 hover:-translate-y-1"
+            whileHover={{ y: -8 }}
+            transition={{ duration: 0.2 }}
+          >
             <div className="p-3 bg-cyan-500/20 rounded-xl w-fit mb-4">
               <Compass className="text-cyan-400 w-6 h-6" />
             </div>
@@ -184,16 +309,20 @@ export default function Home() {
               with your business goals and drive digital transformation.
             </p>
             <Link 
-              href="/services/consultancy"
+              href="/services#consultancy"
               className="inline-flex items-center gap-2 mt-4 text-cyan-400 text-sm font-medium hover:gap-3 transition-all"
             >
               Learn More
               <ArrowRight size={14} />
             </Link>
-          </div>
+          </motion.div>
 
           {/* Card 3 */}
-          <div className="group bg-[#0b1a2d] p-8 rounded-2xl border border-transparent hover:border-cyan-400/30 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/5 hover:-translate-y-1">
+          <motion.div 
+            className="group bg-[#0b1a2d] p-8 rounded-2xl border border-transparent hover:border-cyan-400/30 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/5 hover:-translate-y-1"
+            whileHover={{ y: -8 }}
+            transition={{ duration: 0.2 }}
+          >
             <div className="p-3 bg-cyan-500/10 rounded-xl w-fit mb-4 group-hover:bg-cyan-500/20 transition">
               <Layers className="text-cyan-400 w-6 h-6" />
             </div>
@@ -205,20 +334,30 @@ export default function Home() {
               user experiences that delight your customers.
             </p>
             <Link 
-              href="/services/full-stack"
+              href="/services#full-stack"
               className="inline-flex items-center gap-2 mt-4 text-cyan-400 text-sm font-medium hover:gap-3 transition-all"
             >
               Learn More
               <ArrowRight size={14} />
             </Link>
-          </div>
+          </motion.div>
 
         </div>
-      </section>
+      </motion.section>
 
       {/* CTA SECTION */}
-      <section className="relative max-w-7xl mx-auto px-6 pb-24">
-        <div className="bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-cyan-500/10 rounded-3xl p-12 md:p-16 border border-cyan-400/10 text-center">
+      <motion.section 
+        className="relative max-w-7xl mx-auto px-6 pb-24"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <motion.div 
+          className="bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-cyan-500/10 rounded-3xl p-12 md:p-16 border border-cyan-400/10 text-center"
+          whileHover={{ boxShadow: "0 0 60px rgba(34,211,238,0.1)" }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to Build Something <span className="text-cyan-400">Extraordinary?</span>
           </h2>
@@ -227,22 +366,34 @@ export default function Home() {
             Your digital transformation journey starts here.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-400 text-black rounded-full font-medium hover:opacity-90 transition hover:scale-105 duration-300 shadow-lg shadow-cyan-500/25"
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
             >
-              Start Your Project
-              <ArrowRight size={18} />
-            </Link>
-            <Link
-              href="/portfolio"
-              className="inline-flex items-center gap-2 px-8 py-3.5 border border-white/20 text-white rounded-full font-medium hover:bg-white/5 transition hover:scale-105 duration-300"
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-400 text-black rounded-full font-medium hover:opacity-90 transition hover:scale-105 duration-300 shadow-lg shadow-cyan-500/25"
+              >
+                Start Your Project
+                <ArrowRight size={18} />
+              </Link>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
             >
-              View Our Work
-            </Link>
+              <Link
+                href="/portfolio"
+                className="inline-flex items-center gap-2 px-8 py-3.5 border border-white/20 text-white rounded-full font-medium hover:bg-white/5 transition hover:scale-105 duration-300"
+              >
+                View Our Work
+              </Link>
+            </motion.div>
           </div>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
     </main>
   );

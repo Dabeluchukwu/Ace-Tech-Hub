@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { ArrowRight, Loader2, Search, X, Grid3x3, LayoutGrid, Filter } from "lucide-react";
+import { ArrowRight, Loader2, Search, X, Grid3x3, LayoutGrid, Filter, ImageIcon } from "lucide-react";
 import { getServices } from "@/lib/api";
 
 // Fallback filters if no services exist
@@ -55,6 +55,7 @@ export default function PortfolioHero() {
     category: service.category || "Uncategorized",
     title: service.title || "Untitled Project",
     desc: service.description || "No description available.",
+    imageUrl: service.imageUrl || null,
     gradient: service.featured 
       ? "from-cyan-500/20 via-blue-500/10 to-transparent" 
       : "from-slate-700/30 via-slate-800/20 to-transparent",
@@ -70,12 +71,10 @@ export default function PortfolioHero() {
   const filteredProjects = useMemo(() => {
     let result = projects;
     
-    // Filter by category
     if (activeFilter !== "All Projects") {
       result = result.filter((p) => p.category === activeFilter);
     }
     
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       result = result.filter(
@@ -200,7 +199,6 @@ export default function PortfolioHero() {
           Exploring the intersection of technical precision and creative momentum.
         </p>
         
-        {/* Stats */}
         <div className="mt-6 flex flex-wrap items-center gap-6">
           <span className="text-sm text-slate-500">
             {services.length} {services.length === 1 ? 'project' : 'projects'} available
@@ -221,7 +219,6 @@ export default function PortfolioHero() {
       {/* Search and Filter Bar */}
       <section className="max-w-6xl mx-auto mb-10">
         <div className="flex flex-col md:flex-row md:items-center gap-4">
-          {/* Search Bar */}
           <div className="flex-1 relative">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
@@ -243,7 +240,6 @@ export default function PortfolioHero() {
             </div>
           </div>
 
-          {/* Filter Dropdown for Mobile */}
           <div className="flex md:hidden items-center gap-2 overflow-x-auto pb-2">
             <Filter size={16} className="text-slate-500 flex-shrink-0" />
             {filters.map((f) => (
@@ -261,7 +257,6 @@ export default function PortfolioHero() {
             ))}
           </div>
 
-          {/* Filter Buttons for Desktop */}
           <div className="hidden md:flex flex-wrap gap-2 flex-shrink-0">
             {filters.map((f) => (
               <button
@@ -279,7 +274,6 @@ export default function PortfolioHero() {
           </div>
         </div>
 
-        {/* Filter indicator for mobile */}
         <div className="flex md:hidden items-center gap-2 mt-3 text-xs text-slate-500">
           <span className="font-medium">Filter:</span>
           <span className="text-cyan-400">{activeFilter}</span>
@@ -332,6 +326,20 @@ export default function PortfolioHero() {
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all duration-500" />
 
                 <div className="relative z-10 flex flex-col h-full">
+                  {/* Featured Image */}
+                  {p.imageUrl && (
+                    <div className="mb-4 rounded-xl overflow-hidden h-48 w-full">
+                      <img
+                        src={p.imageUrl}
+                        alt={p.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
+
                   {/* Tags */}
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full text-slate-300">

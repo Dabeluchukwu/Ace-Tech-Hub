@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; 
 import AdminLayout from '@/components/Admin/Layout';
 import { getServices, deleteService, toggleFeatured } from '@/lib/api';
+import { ImageIcon } from 'lucide-react';
 
 export default function AdminServices() {
   const router = useRouter();
@@ -129,6 +130,9 @@ export default function AdminServices() {
                   />
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Image
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Service
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -161,6 +165,29 @@ export default function AdminServices() {
                       }}
                       className="rounded border-gray-300"
                     />
+                  </td>
+                  <td className="px-6 py-4">
+                    {service.imageUrl ? (
+                      <img
+                        src={service.imageUrl}
+                        alt={service.title}
+                        className="w-12 h-12 object-cover rounded-lg"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          // Show fallback icon
+                          const parent = e.target.parentElement;
+                          const fallback = document.createElement('div');
+                          fallback.className = 'w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center';
+                          fallback.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+                          parent.appendChild(fallback);
+                          e.target.remove();
+                        }}
+                      />
+                    ) : (
+                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <ImageIcon size={18} className="text-gray-400" />
+                      </div>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">{service.title}</div>
