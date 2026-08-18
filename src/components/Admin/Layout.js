@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Globe } from 'lucide-react';
+import { Globe, Award } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
   { name: 'Services', href: '/admin/services', icon: '🛠️' },
   { name: 'Blog', href: '/admin/blog', icon: '📝' },
   { name: 'Messages', href: '/admin/messages', icon: '✉️' },
+  { name: 'Certificates', href: '/admin/certificates', icon: '🏆' }, // ✅ Added
   { name: 'Notifications', href: '/admin/notifications', icon: '🔔' },
 ];
 
@@ -18,7 +19,6 @@ export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  // Close sidebar on mobile by default
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 1024) {
@@ -69,8 +69,8 @@ export default function AdminLayout({ children }) {
               href={item.href}
               className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition ${
                 pathname === item.href
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
+                  ? 'bg-cyan-50 text-cyan-700'
+                  : 'text-gray-700 hover:bg-gray-50 hover:text-cyan-600'
               }`}
             >
               <span className="mr-3 text-lg">{item.icon}</span>
@@ -81,7 +81,7 @@ export default function AdminLayout({ children }) {
           {/* Divider */}
           <div className="my-4 border-t border-gray-200"></div>
           
-          {/* View Site Button - Opens in same tab */}
+          {/* View Site Button */}
           <Link
             href="/"
             className="flex items-center px-4 py-3 text-sm font-medium text-cyan-600 bg-cyan-50 rounded-lg hover:bg-cyan-100 transition group"
@@ -116,7 +116,6 @@ export default function AdminLayout({ children }) {
       <div className={`lg:ml-64 min-h-screen transition-all duration-300 ${
         isSidebarOpen ? 'ml-64' : 'ml-0'
       }`}>
-        {/* Content */}
         <div className="p-4 md:p-8">
           {children}
         </div>

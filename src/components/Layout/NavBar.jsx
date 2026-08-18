@@ -10,6 +10,7 @@ const navItems = [
   { name: "About", href: "/about" },
   { name: "Services", href: "/services" }, 
   { name: "Portfolio", href: "/portfolio" },
+  { name: "Certificates", href: "/certificates" }, 
   { name: "Resources", href: "/blog" },
   { name: "Contact", href: "/contact" },
 ];
@@ -20,16 +21,13 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   
-  // Check if we're on an admin page
   const isAdminPage = pathname?.startsWith('/admin');
 
-  // ✅ Check if user is logged in
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     setIsLoggedIn(!!token);
-  }, [pathname]); // Re-check on route change
+  }, [pathname]);
 
-  // ✅ shadow on scroll
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -38,7 +36,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ✅ auto close on route change
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
@@ -63,7 +60,6 @@ export default function Navbar() {
           <span className="text-white font-semibold tracking-wide">
             ACE TECH <span className="text-cyan-400">HUB</span>
           </span>
-          {/* ✅ Only show "Admin" badge when logged in AND on admin page */}
           {isLoggedIn && isAdminPage && (
             <span className="ml-2 text-xs bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-full border border-cyan-500/30">
               Admin
@@ -74,7 +70,6 @@ export default function Navbar() {
         {/* DESKTOP NAV */}
         <div className="hidden md:flex items-center gap-8 text-sm">
           {isAdminPage ? (
-            // Admin Nav Items
             <>
               <Link
                 href="/admin/dashboard"
@@ -98,7 +93,6 @@ export default function Navbar() {
               </Link>
             </>
           ) : (
-            // Regular Site Nav Items
             navItems.map((item) => {
               const isActive = pathname === item.href;
 
@@ -121,7 +115,6 @@ export default function Navbar() {
             })
           )}
           
-          {/* Admin Dashboard Link (visible on non-admin pages when logged in) */}
           {!isAdminPage && isLoggedIn && (
             <Link
               href="/admin/dashboard"
@@ -166,7 +159,6 @@ export default function Navbar() {
         {/* LINKS */}
         <div className="flex flex-col gap-6 p-6">
           {isAdminPage ? (
-            // Admin Mobile Links
             <>
               <Link
                 href="/admin/dashboard"
@@ -209,10 +201,15 @@ export default function Navbar() {
                 >
                   ✉️ Messages
                 </Link>
+                <Link
+                  href="/admin/certificates"
+                  className="block text-gray-300 hover:text-cyan-400 transition py-2"
+                >
+                  🏆 Certificates
+                </Link>
               </div>
             </>
           ) : (
-            // Regular Site Mobile Links
             <>
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
@@ -234,7 +231,6 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-              {/* ✅ Only show Admin Dashboard in mobile menu when logged in */}
               {isLoggedIn && (
                 <div className="pt-4 border-t border-white/10">
                   <Link
