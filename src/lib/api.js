@@ -11,6 +11,21 @@ export const getMe = async () => {
   return response.data;
 };
 
+export const updateProfile = async (data) => {
+  const response = await apiClient.put('/api/auth/update-profile', data);
+  return response.data;
+};
+
+export const changePassword = async (data) => {
+  const response = await apiClient.put('/api/auth/change-password', data);
+  return response.data;
+};
+
+export const deleteAccount = async (data) => {
+  const response = await apiClient.delete('/api/auth/delete-account', { data });
+  return response.data;
+};
+
 // ============ SERVICES ============
 
 export const getServices = async (params = {}) => {
@@ -133,6 +148,13 @@ export const markAllNotificationsRead = async () => {
 
 export const deleteNotification = async (id) => {
   const response = await apiClient.delete(`/api/notifications/${id}`);
+  return response.data;
+};
+
+export const bulkDeleteNotifications = async (notificationIds) => {
+  const response = await apiClient.delete('/api/notifications/bulk', {
+    data: { notificationIds },
+  });
   return response.data;
 };
 

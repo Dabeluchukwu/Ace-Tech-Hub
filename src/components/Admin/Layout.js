@@ -3,15 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Globe, Award } from 'lucide-react';
+import { Globe, Settings } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
   { name: 'Services', href: '/admin/services', icon: '🛠️' },
   { name: 'Blog', href: '/admin/blog', icon: '📝' },
   { name: 'Messages', href: '/admin/messages', icon: '✉️' },
-  { name: 'Certificates', href: '/admin/certificates', icon: '🏆' }, // ✅ Added
+  { name: 'Certificates', href: '/admin/certificates', icon: '🏆' },
   { name: 'Notifications', href: '/admin/notifications', icon: '🔔' },
+  { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
 ];
 
 export default function AdminLayout({ children }) {
@@ -19,6 +20,7 @@ export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+  // Close sidebar on mobile by default
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 1024) {
@@ -41,7 +43,7 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile Menu Button */}
+      {/* ✅ Mobile Menu Button - Fixed */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -54,15 +56,20 @@ export default function AdminLayout({ children }) {
         </button>
       </div>
 
-      {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0`}>
-        <div className="p-6 border-b border-gray-100">
+      {/* ✅ Sidebar - Fixed with its own scroll */}
+      <div 
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 flex flex-col h-full`}
+      >
+        {/* ✅ Logo - Fixed at top */}
+        <div className="flex-shrink-0 p-6 border-b border-gray-100">
           <h1 className="text-2xl font-bold text-gray-800">ACE TECH HUB</h1>
           <p className="text-sm text-gray-500">Admin Panel</p>
         </div>
-        <nav className="mt-6 px-4">
+
+        {/* ✅ Navigation - Scrollable if content overflows */}
+        <nav className="flex-1 overflow-y-auto px-4 py-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -77,10 +84,10 @@ export default function AdminLayout({ children }) {
               {item.name}
             </Link>
           ))}
-          
-          {/* Divider */}
-          <div className="my-4 border-t border-gray-200"></div>
-          
+        </nav>
+
+        {/* ✅ Bottom Section - Fixed at bottom */}
+        <div className="flex-shrink-0 border-t border-gray-200 p-4 space-y-2">
           {/* View Site Button */}
           <Link
             href="/"
@@ -96,15 +103,15 @@ export default function AdminLayout({ children }) {
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="w-full flex items-center px-4 py-3 text-sm font-medium text-red-700 hover:bg-red-50 rounded-lg transition mt-2"
+            className="w-full flex items-center px-4 py-3 text-sm font-medium text-red-700 hover:bg-red-50 rounded-lg transition"
           >
             <span className="mr-3 text-lg">🚪</span>
             Logout
           </button>
-        </nav>
+        </div>
       </div>
 
-      {/* Overlay for mobile */}
+      {/* ✅ Overlay for mobile */}
       {isSidebarOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
@@ -112,7 +119,7 @@ export default function AdminLayout({ children }) {
         />
       )}
 
-      {/* Main Content */}
+      {/* ✅ Main Content - Scrollable */}
       <div className={`lg:ml-64 min-h-screen transition-all duration-300 ${
         isSidebarOpen ? 'ml-64' : 'ml-0'
       }`}>

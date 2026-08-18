@@ -3,8 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/Admin/Layout';
-import { getNotifications, markNotificationRead, markAllNotificationsRead, deleteNotification } from '@/lib/api';
-import { Bell, CheckCircle, Trash2, Eye, Mail, MessageSquare, AlertCircle } from 'lucide-react';
+import { 
+  getNotifications, 
+  markNotificationRead, 
+  markAllNotificationsRead, 
+  deleteNotification,
+  bulkDeleteNotifications // ✅ Import
+} from '@/lib/api';
+import { Bell, CheckCircle, Trash2, Eye, Mail, MessageSquare, AlertCircle, Trash } from 'lucide-react';
 
 export default function AdminNotifications() {
   const router = useRouter();
@@ -13,6 +19,8 @@ export default function AdminNotifications() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -43,6 +51,7 @@ export default function AdminNotifications() {
         n._id === id ? { ...n, isRead: true } : n
       ));
       setUnreadCount(prev => Math.max(0, prev - 1));
+      setSelectedIds(selectedIds.filter(sid => sid !== id));
     } catch (err) {
       console.error('Error marking as read:', err);
     }
@@ -53,6 +62,8 @@ export default function AdminNotifications() {
       await markAllNotificationsRead();
       setNotifications(notifications.map(n => ({ ...n, isRead: true })));
       setUnreadCount(0);
+      setSelectedIds([]);
+      setSelectAll(false);
     } catch (err) {
       console.error('Error marking all as read:', err);
     }
@@ -66,9 +77,51 @@ export default function AdminNotifications() {
       if (!notifications.find(n => n._id === id)?.isRead) {
         setUnreadCount(prev => Math.max(0, prev - 1));
       }
+      setSelectedIds(selectedIds.filter(sid => sid !== id));
     } catch (err) {
       console.error('Error deleting notification:', err);
     }
+  };
+
+  // ✅ Bulk delete handler
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) {
+      alert('Please select at least one notification');
+      return;
+    }
+    
+    if (!confirm(`Delete ${selectedIds.length} selected notifications? This action cannot be undone.`)) return;
+    
+    try {
+      await bulkDeleteNotifications(selectedIds);
+      await fetchNotifications();
+      setSelectedIds([]);
+      setSelectAll(false);
+    } catch (err) {
+      console.error('Error bulk deleting notifications:', err);
+      alert('Failed to delete notifications');
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    const checked = e.target.checked;
+    setSelectAll(checked);
+    if (checked) {
+      const ids = filteredNotifications.map(n => n._id);
+      setSelectedIds(ids);
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    setSelectedIds(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(sid => sid !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
   };
 
   const getTypeIcon = (type) => {
@@ -97,7 +150,14 @@ export default function AdminNotifications() {
       ? notifications.filter(n => !n.isRead)
       : notifications.filter(n => n.isRead);
 
-  // Helper component for FileText icon since it's not imported
+  // Update selectAll when filtered notifications change
+  useEffect(() => {
+    const filteredIds = filteredNotifications.map(n => n._id);
+    const allSelected = filteredIds.length > 0 && filteredIds.every(id => selectedIds.includes(id));
+    setSelectAll(allSelected);
+  }, [filteredNotifications, selectedIds]);
+
+  // Helper component for FileText icon
   const FileText = ({ size, className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
       <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
@@ -150,6 +210,31 @@ export default function AdminNotifications() {
           <p className="text-2xl font-bold text-green-600">{notifications.length - unreadCount}</p>
         </div>
       </div>
+
+      {/* Bulk Actions Bar */}
+      {selectedIds.length > 0 && (
+        <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-3 mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-cyan-700">
+              {selectedIds.length} notification{selectedIds.length !== 1 ? 's' : ''} selected
+            </span>
+            <span className="text-xs text-cyan-500">|</span>
+            <button
+              onClick={() => setSelectedIds([])}
+              className="text-sm text-cyan-600 hover:text-cyan-800 transition"
+            >
+              Clear selection
+            </button>
+          </div>
+          <button
+            onClick={handleBulkDelete}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm"
+          >
+            <Trash size={16} />
+            Delete Selected
+          </button>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2 mb-4">
@@ -209,8 +294,19 @@ export default function AdminNotifications() {
               } ${getTypeColor(notif.type)}`}
             >
               <div className="flex items-start gap-4">
+                {/* Checkbox */}
+                <div className="flex items-center pt-1">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(notif._id)}
+                    onChange={() => handleSelectOne(notif._id)}
+                    className="rounded border-gray-300"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+
                 {/* Icon */}
-                <div className="p-2 bg-white rounded-lg shadow-sm">
+                <div className="p-2 bg-white rounded-lg shadow-sm flex-shrink-0">
                   {getTypeIcon(notif.type)}
                 </div>
 
