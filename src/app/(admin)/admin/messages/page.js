@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/Admin/Layout';
-import { getMessages, deleteMessage, updateMessageStatus } from '@/lib/api';
-import { Mail, CheckCircle, Reply, Archive, Trash2, Eye } from 'lucide-react';
+import { getMessages, deleteMessage, updateMessageStatus, bulkDeleteMessages } from '@/lib/api';
+import { Mail, CheckCircle, Reply, Archive, Trash2, Eye, Trash } from 'lucide-react';
 
 export default function AdminMessages() {
   const router = useRouter();
@@ -13,6 +13,8 @@ export default function AdminMessages() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -41,7 +43,6 @@ export default function AdminMessages() {
     try {
       await deleteMessage(id);
       setMessages(messages.filter(m => m._id !== id));
-      // Update stats
       if (stats) {
         const updatedStats = { ...stats };
         updatedStats.total -= 1;
@@ -50,8 +51,38 @@ export default function AdminMessages() {
         }
         setStats(updatedStats);
       }
+      setSelectedIds(selectedIds.filter(sid => sid !== id));
     } catch (err) {
       alert('Failed to delete message');
+    }
+  };
+
+  // ✅ Make sure this function is correct
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) {
+      alert('Please select at least one message');
+      return;
+    }
+    
+    console.log('📝 Selected IDs before delete:', selectedIds);
+    console.log('📝 Is array:', Array.isArray(selectedIds));
+    console.log('📝 Type of first ID:', typeof selectedIds[0]);
+    
+    if (!confirm(`Delete ${selectedIds.length} selected messages? This action cannot be undone.`)) return;
+    
+    try {
+      console.log('📝 Calling bulkDeleteMessages with:', selectedIds);
+      const result = await bulkDeleteMessages(selectedIds);
+      console.log('✅ Bulk delete result:', result);
+      
+      // Refresh messages
+      await fetchMessages();
+      setSelectedIds([]);
+      setSelectAll(false);
+    } catch (err) {
+      console.error('❌ Bulk delete error:', err);
+      console.error('❌ Error response:', err.response);
+      alert(err.response?.data?.message || 'Failed to delete messages');
     }
   };
 
@@ -61,11 +92,31 @@ export default function AdminMessages() {
       setMessages(messages.map(m => 
         m._id === id ? { ...m, status } : m
       ));
-      // Refresh stats
       fetchMessages();
     } catch (err) {
       alert('Failed to update message status');
     }
+  };
+
+  const handleSelectAll = (e) => {
+    const checked = e.target.checked;
+    setSelectAll(checked);
+    if (checked) {
+      const ids = filteredMessages.map(m => m._id);
+      setSelectedIds(ids);
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    setSelectedIds(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(sid => sid !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
   };
 
   const getStatusColor = (status) => {
@@ -91,6 +142,12 @@ export default function AdminMessages() {
   const filteredMessages = filter === 'all' 
     ? messages 
     : messages.filter(m => m.status === filter);
+
+  useEffect(() => {
+    const filteredIds = filteredMessages.map(m => m._id);
+    const allSelected = filteredIds.length > 0 && filteredIds.every(id => selectedIds.includes(id));
+    setSelectAll(allSelected);
+  }, [filteredMessages, selectedIds]);
 
   if (loading) {
     return (
@@ -128,6 +185,31 @@ export default function AdminMessages() {
             <p className="text-sm text-gray-500">Archived</p>
             <p className="text-2xl font-bold text-gray-600">{stats.archived}</p>
           </div>
+        </div>
+      )}
+
+      {/* Bulk Actions Bar */}
+      {selectedIds.length > 0 && (
+        <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-3 mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-cyan-700">
+              {selectedIds.length} message{selectedIds.length !== 1 ? 's' : ''} selected
+            </span>
+            <span className="text-xs text-cyan-500">|</span>
+            <button
+              onClick={() => setSelectedIds([])}
+              className="text-sm text-cyan-600 hover:text-cyan-800 transition"
+            >
+              Clear selection
+            </button>
+          </div>
+          <button
+            onClick={handleBulkDelete}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm"
+          >
+            <Trash size={16} />
+            Delete Selected
+          </button>
         </div>
       )}
 
@@ -194,6 +276,14 @@ export default function AdminMessages() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <input
+                      type="checkbox"
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                      className="rounded border-gray-300"
+                    />
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     From
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -219,6 +309,14 @@ export default function AdminMessages() {
                     }`}
                     onClick={() => router.push(`/admin/messages/${message._id}`)}
                   >
+                    <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(message._id)}
+                        onChange={() => handleSelectOne(message._id)}
+                        className="rounded border-gray-300"
+                      />
+                    </td>
                     <td className="px-6 py-4">
                       <div className="text-sm font-medium text-gray-900">{message.name}</div>
                       <div className="text-sm text-gray-500">{message.email}</div>

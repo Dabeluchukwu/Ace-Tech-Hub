@@ -1,16 +1,17 @@
 import axios from 'axios';
 
-// Use the full backend URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://ace-tech-hub-backend.onrender.com';
+// ✅ This will automatically use the right URL based on the environment
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 console.log('🔗 API Base URL:', API_BASE_URL);
+console.log('🔗 Environment:', process.env.NODE_ENV);
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000, // 30 second timeout
+  timeout: 30000,
   withCredentials: true,
 });
 

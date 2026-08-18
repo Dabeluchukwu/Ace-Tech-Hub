@@ -280,7 +280,11 @@ export const updateMessageStatus = async (id, status) => {
   const response = await apiClient.put(`/api/messages/${id}/status`, { status });
   return response.data;
 };
-
+export const bulkDeleteMessages = async (messageIds) => {
+  console.log('📝 Sending bulk delete with IDs:', messageIds);
+  const response = await apiClient.post('/api/messages/bulk-delete', { messageIds });
+  return response.data;
+};
 // ============ NOTIFICATIONS ============
 export const getNotifications = async (params = {}) => {
   const response = await apiClient.get('/api/notifications', { params });
