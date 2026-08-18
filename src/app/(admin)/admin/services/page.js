@@ -102,144 +102,146 @@ export default function AdminServices() {
       )}
 
       {services.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
-          <p className="text-gray-500 text-lg">No services added yet</p>
-          <button
-            onClick={() => router.push('/admin/services/new')}
-            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
-            Add Your First Service
-          </button>
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <input
-                    type="checkbox"
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedIds(services.map(s => s._id));
-                      } else {
-                        setSelectedIds([]);
-                      }
+  <div className="bg-white rounded-lg shadow p-12 text-center">
+    <p className="text-gray-500 text-lg">No services added yet</p>
+    <button
+      onClick={() => router.push('/admin/services/new')}
+      className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+    >
+      Add Your First Service
+    </button>
+  </div>
+) : (
+  <div className="bg-white rounded-lg shadow overflow-hidden">
+    {/* ✅ Add horizontal scroll wrapper */}
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <input
+                type="checkbox"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedIds(services.map(s => s._id));
+                  } else {
+                    setSelectedIds([]);
+                  }
+                }}
+                className="rounded border-gray-300"
+              />
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Image
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Service
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Category
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Technologies
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Status
+            </th>
+            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {services.map((service) => (
+            <tr key={service._id} className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.includes(service._id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedIds([...selectedIds, service._id]);
+                    } else {
+                      setSelectedIds(selectedIds.filter(id => id !== service._id));
+                    }
+                  }}
+                  className="rounded border-gray-300"
+                />
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {service.imageUrl ? (
+                  <img
+                    src={service.imageUrl}
+                    alt={service.title}
+                    className="w-12 h-12 object-cover rounded-lg"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      const parent = e.target.parentElement;
+                      const fallback = document.createElement('div');
+                      fallback.className = 'w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center';
+                      fallback.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+                      parent.appendChild(fallback);
+                      e.target.remove();
                     }}
-                    className="rounded border-gray-300"
                   />
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Image
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Service
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Technologies
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {services.map((service) => (
-                <tr key={service._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(service._id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedIds([...selectedIds, service._id]);
-                        } else {
-                          setSelectedIds(selectedIds.filter(id => id !== service._id));
-                        }
-                      }}
-                      className="rounded border-gray-300"
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    {service.imageUrl ? (
-                      <img
-                        src={service.imageUrl}
-                        alt={service.title}
-                        className="w-12 h-12 object-cover rounded-lg"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          // Show fallback icon
-                          const parent = e.target.parentElement;
-                          const fallback = document.createElement('div');
-                          fallback.className = 'w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center';
-                          fallback.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
-                          parent.appendChild(fallback);
-                          e.target.remove();
-                        }}
-                      />
-                    ) : (
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <ImageIcon size={18} className="text-gray-400" />
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">{service.title}</div>
-                    <div className="text-sm text-gray-500 truncate max-w-xs">{service.description}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-600">{service.category}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1">
-                      {service.technologies?.slice(0, 3).map((tech) => (
-                        <span key={tech} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
-                          {tech}
-                        </span>
-                      ))}
-                      {service.technologies?.length > 3 && (
-                        <span className="text-xs text-gray-500">+{service.technologies.length - 3}</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <button
-                      onClick={() => handleToggleFeatured(service._id)}
-                      className={`px-2 py-1 rounded text-xs ${
-                        service.featured
-                          ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
-                    >
-                      {service.featured ? '⭐ Featured' : 'Not Featured'}
-                    </button>
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium">
-                    <button
-                      onClick={() => router.push(`/admin/services/edit/${service._id}`)}
-                      className="text-blue-600 hover:text-blue-900 mr-3"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(service._id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                ) : (
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <ImageIcon size={18} className="text-gray-400" />
+                  </div>
+                )}
+              </td>
+              <td className="px-6 py-4">
+                <div className="text-sm font-medium text-gray-900">{service.title}</div>
+                <div className="text-sm text-gray-500 truncate max-w-xs">{service.description}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className="text-sm text-gray-600">{service.category}</span>
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex flex-wrap gap-1">
+                  {service.technologies?.slice(0, 3).map((tech) => (
+                    <span key={tech} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded whitespace-nowrap">
+                      {tech}
+                    </span>
+                  ))}
+                  {service.technologies?.length > 3 && (
+                    <span className="text-xs text-gray-500 whitespace-nowrap">+{service.technologies.length - 3}</span>
+                  )}
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <button
+                  onClick={() => handleToggleFeatured(service._id)}
+                  className={`px-2 py-1 rounded text-xs ${
+                    service.featured
+                      ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {service.featured ? '⭐ Featured' : 'Not Featured'}
+                </button>
+              </td>
+              <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
+                <button
+                  onClick={() => router.push(`/admin/services/edit/${service._id}`)}
+                  className="text-blue-600 hover:text-blue-900 mr-3"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(service._id)}
+                  className="text-red-600 hover:text-red-900"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
     </AdminLayout>
   );
 }
