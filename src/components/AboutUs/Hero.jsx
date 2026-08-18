@@ -12,7 +12,7 @@ export default function About() {
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-
+        
         <div className="relative z-10 max-w-4xl mx-auto">
           <p className="text-xs tracking-[0.3em] text-cyan-400 mb-6">
             OUR VISIONARY DIRECTIVE
@@ -63,14 +63,12 @@ export default function About() {
                   src="/images/dabimainpiccrop.jpeg"
                   alt="ACE TECH HUB Founders"
                   fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  loading="eager"
-                  fetchPriority="high"
+                  unoptimized
                   className="rounded-xl object-cover opacity-90 hover:opacity-100 transition-opacity duration-500"
                 />
               </div>
             </div>
-
+            
             {/* Founder Info */}
             <div className="text-center md:text-left">
               <div className="inline-flex items-center gap-2 bg-cyan-500/10 px-4 py-2 rounded-full border border-cyan-500/20 mb-3">
@@ -84,13 +82,9 @@ export default function About() {
                 Leading Digital Innovation at ACE TECH HUB
               </p>
               <div className="flex items-center gap-3 mt-3 justify-center md:justify-start">
-                <span className="text-xs text-cyan-400/60">
-                  ✦ Visionary Architect
-                </span>
+                <span className="text-xs text-cyan-400/60">✦ Visionary Architect</span>
                 <span className="w-1 h-1 bg-cyan-400/30 rounded-full"></span>
-                <span className="text-xs text-cyan-400/60">
-                  ✦ Tech Strategist
-                </span>
+                <span className="text-xs text-cyan-400/60">✦ Tech Strategist</span>
               </div>
             </div>
           </div>
@@ -108,10 +102,10 @@ export default function About() {
             </p>
 
             <p className="text-gray-400 mb-8 leading-relaxed">
-              We pioneered the 'Kinetic Monolith'—a philosophy where
-              foundational code remains as solid as granite while the interface
-              layers remain as adaptable as water. This duality allows our
-              partners to scale without friction.
+              We pioneered the 'Kinetic Monolith'—a philosophy where foundational
+              code remains as solid as granite while the interface layers remain
+              as adaptable as water. This duality allows our partners to scale
+              without friction.
             </p>
 
             {/* QUOTE BOX */}
