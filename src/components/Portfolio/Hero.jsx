@@ -1,18 +1,10 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { ArrowRight, Loader2, Search, X, Grid3x3, LayoutGrid, Filter, ImageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowRight, Loader2, Search, X, Filter, Eye, ExternalLink } from "lucide-react";
 import { getServices } from "@/lib/api";
 import { motion } from "framer-motion";
-
-// Fallback filters if no services exist
-const defaultFilters = [
-  "All Projects",
-  "Web Development",
-  "Software Consultancy",
-  "Cloud Solutions",
-  "Enterprise Software",
-];
 
 // Animation variants
 const fadeUp = {
@@ -42,32 +34,61 @@ const staggerCards = {
   }
 };
 
+// Fallback filters if no services exist
+const defaultFilters = [
+  "All Projects",
+  "Web Development",
+  "Software Consultancy",
+  "Cloud Solutions",
+  "Enterprise Software",
+];
+
 export default function PortfolioHero() {
+  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState("All Projects");
   const [searchQuery, setSearchQuery] = useState("");
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState(defaultFilters);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     fetchServices();
-  }, []);
+  }, [currentPage, activeFilter, searchQuery]);
 
   const fetchServices = async () => {
     try {
       setLoading(true);
-      const response = await getServices();
+      
+      // Build query params
+      const params = {
+        page: currentPage,
+        limit: itemsPerPage,
+      };
+      
+      if (activeFilter !== "All Projects") {
+        params.category = activeFilter;
+      }
+      
+      if (searchQuery.trim()) {
+        params.search = searchQuery.trim();
+      }
+      
+      const response = await getServices(params);
       const data = response.data || [];
       setServices(data);
+      setTotalPages(response.totalPages || 1);
+      setTotalItems(response.total || 0);
       
-      if (data.length > 0) {
-        const categories = data
-          .map(item => item.category)
-          .filter(Boolean)
-          .filter((value, index, self) => self.indexOf(value) === index);
-        
-        setFilters(["All Projects", ...categories]);
+      // Update filters
+      if (response.categories && response.categories.length > 0) {
+        setFilters(["All Projects", ...response.categories]);
       }
     } catch (err) {
       console.error("Error fetching services:", err);
@@ -92,46 +113,26 @@ export default function PortfolioHero() {
     liveUrl: service.liveUrl,
     technologies: service.technologies || [],
     featured: service.featured || false,
+    views: service.views || 0,
   });
 
   const projects = services.map(mapServiceToProject);
 
-  // Filter projects by category and search
-  const filteredProjects = useMemo(() => {
-    let result = projects;
-    
-    if (activeFilter !== "All Projects") {
-      result = result.filter((p) => p.category === activeFilter);
-    }
-    
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        (p) =>
-          p.title.toLowerCase().includes(query) ||
-          p.desc.toLowerCase().includes(query) ||
-          p.tag.toLowerCase().includes(query) ||
-          p.technologies.some((tech) => tech.toLowerCase().includes(query))
-      );
-    }
-    
-    return result;
-  }, [projects, activeFilter, searchQuery]);
-
   const clearSearch = () => {
     setSearchQuery("");
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Loading State
   if (loading) {
     return (
       <main className="min-h-screen bg-[#020617] px-6 md:px-16 py-16 text-white">
-        <motion.section 
-          className="max-w-6xl mx-auto mb-16"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
+        <section className="max-w-6xl mx-auto mb-16">
           <div className="w-16 h-[2px] bg-cyan-400 mb-6"></div>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             Our <span className="text-cyan-400">Portfolio</span>
@@ -139,20 +140,24 @@ export default function PortfolioHero() {
           <p className="mt-4 text-slate-400 max-w-xl text-lg">
             Exploring the intersection of technical precision and creative momentum.
           </p>
-        </motion.section>
+        </section>
         
         <section className="max-w-6xl mx-auto grid md:grid-cols-2 gap-6">
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="relative rounded-2xl overflow-hidden border border-white/5 bg-gradient-to-br from-slate-800/30 to-slate-900/30 p-6 md:p-8 min-h-[260px] animate-pulse"
+              className="relative rounded-2xl overflow-hidden border border-white/5 bg-gradient-to-br from-slate-800/30 to-slate-900/30 p-6 md:p-8 min-h-[280px] animate-pulse"
             >
               <div className="space-y-4">
+                <div className="h-48 bg-white/5 rounded-xl"></div>
                 <div className="h-6 w-24 bg-white/5 rounded-full"></div>
                 <div className="h-8 w-48 bg-white/5 rounded"></div>
                 <div className="h-4 w-full bg-white/5 rounded"></div>
                 <div className="h-4 w-3/4 bg-white/5 rounded"></div>
-                <div className="h-10 w-36 bg-white/5 rounded-full"></div>
+                <div className="flex gap-3">
+                  <div className="h-10 w-32 bg-white/5 rounded-full"></div>
+                  <div className="h-10 w-32 bg-white/5 rounded-full"></div>
+                </div>
               </div>
             </div>
           ))}
@@ -165,12 +170,7 @@ export default function PortfolioHero() {
   if (error) {
     return (
       <main className="min-h-screen bg-[#020617] px-6 md:px-16 py-16 text-white">
-        <motion.section 
-          className="max-w-6xl mx-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
+        <section className="max-w-6xl mx-auto">
           <div className="w-16 h-[2px] bg-cyan-400 mb-6"></div>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             Our <span className="text-cyan-400">Portfolio</span>
@@ -188,21 +188,16 @@ export default function PortfolioHero() {
               Try Again
             </button>
           </div>
-        </motion.section>
+        </section>
       </main>
     );
   }
 
   // No Services State
-  if (services.length === 0) {
+  if (services.length === 0 && !loading) {
     return (
       <main className="min-h-screen bg-[#020617] px-6 md:px-16 py-16 text-white">
-        <motion.section 
-          className="max-w-6xl mx-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
+        <section className="max-w-6xl mx-auto">
           <div className="w-16 h-[2px] bg-cyan-400 mb-6"></div>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             Our <span className="text-cyan-400">Portfolio</span>
@@ -224,7 +219,7 @@ export default function PortfolioHero() {
               </span>
             </div>
           </div>
-        </motion.section>
+        </section>
       </main>
     );
   }
@@ -267,18 +262,11 @@ export default function PortfolioHero() {
           variants={fadeUp}
         >
           <span className="text-sm text-slate-500">
-            {services.length} {services.length === 1 ? 'project' : 'projects'} available
+            {totalItems} {totalItems === 1 ? 'project' : 'projects'} available
           </span>
-          {services.filter(s => s.featured).length > 0 && (
-            <span className="text-xs bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full border border-yellow-500/30">
-              ⭐ {services.filter(s => s.featured).length} featured
-            </span>
-          )}
-          {filteredProjects.length !== services.length && (
-            <span className="text-xs bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/30">
-              🔍 {filteredProjects.length} results
-            </span>
-          )}
+          <span className="text-sm text-slate-500">
+            Page {currentPage} of {totalPages}
+          </span>
         </motion.div>
       </motion.section>
 
@@ -317,7 +305,10 @@ export default function PortfolioHero() {
             {filters.map((f) => (
               <button
                 key={f}
-                onClick={() => setActiveFilter(f)}
+                onClick={() => {
+                  setActiveFilter(f);
+                  setCurrentPage(1);
+                }}
                 className={`px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition ${
                   activeFilter === f
                     ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
@@ -333,7 +324,10 @@ export default function PortfolioHero() {
             {filters.map((f) => (
               <button
                 key={f}
-                onClick={() => setActiveFilter(f)}
+                onClick={() => {
+                  setActiveFilter(f);
+                  setCurrentPage(1);
+                }}
                 className={`px-4 py-2 rounded-full text-sm transition ${
                   activeFilter === f
                     ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
@@ -345,17 +339,6 @@ export default function PortfolioHero() {
             ))}
           </div>
         </div>
-
-        <div className="flex md:hidden items-center gap-2 mt-3 text-xs text-slate-500">
-          <span className="font-medium">Filter:</span>
-          <span className="text-cyan-400">{activeFilter}</span>
-          {searchQuery && (
-            <>
-              <span className="text-slate-600">|</span>
-              <span>Search: "{searchQuery}"</span>
-            </>
-          )}
-        </div>
       </motion.section>
 
       {/* Projects Grid */}
@@ -363,7 +346,7 @@ export default function PortfolioHero() {
         className="max-w-6xl mx-auto"
         variants={staggerCards}
       >
-        {filteredProjects.length === 0 ? (
+        {projects.length === 0 ? (
           <motion.div 
             className="bg-white/5 border border-white/10 rounded-3xl p-12 text-center"
             variants={fadeUp}
@@ -382,6 +365,7 @@ export default function PortfolioHero() {
                 onClick={() => {
                   setSearchQuery("");
                   setActiveFilter("All Projects");
+                  setCurrentPage(1);
                 }}
                 className="mt-4 text-cyan-400 hover:text-cyan-300 transition"
               >
@@ -391,10 +375,10 @@ export default function PortfolioHero() {
           </motion.div>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
-            {filteredProjects.map((p, i) => (
+            {projects.map((p, i) => (
               <motion.div
                 key={p.id || i}
-                className={`group relative rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br ${p.gradient} p-6 md:p-8 min-h-[280px] flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cyan-500/10`}
+                className={`group relative rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br ${p.gradient} p-6 md:p-8 min-h-[320px] flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cyan-500/10`}
                 variants={fadeUp}
                 whileHover={{ y: -8 }}
                 transition={{ duration: 0.3 }}
@@ -435,6 +419,9 @@ export default function PortfolioHero() {
                         ⭐ Featured
                       </span>
                     )}
+                    <span className="text-xs text-slate-500">
+                        👁️ {p.views || 0}
+                      </span>
                   </div>
 
                   {/* Title */}
@@ -466,32 +453,88 @@ export default function PortfolioHero() {
                     </div>
                   )}
 
-                  {/* Action Button */}
-                  <div className="mt-6">
-                    {p.button && p.liveUrl ? (
+                  {/* Action Buttons */}
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    {/* View Details Button */}
+                    <motion.button
+                      onClick={() => router.push(`/portfolio/${p.id}`)}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition border border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10 hover:border-cyan-400"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      View Details <Eye size={16} />
+                    </motion.button>
+                    
+                    {/* Live Project Button - Only shows if liveUrl exists */}
+                    {p.button && p.liveUrl && (
                       <motion.a
                         href={p.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition bg-gradient-to-r from-cyan-400 to-blue-500 text-black hover:opacity-90 hover:scale-105 duration-300 shadow-lg shadow-cyan-500/25"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition bg-gradient-to-r from-cyan-400 to-blue-500 text-black hover:opacity-90"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        View Project <ArrowRight size={16} />
+                        Live Project <ExternalLink size={16} />
                       </motion.a>
-                    ) : (
-                      <motion.button 
-                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition border border-white/20 text-white hover:bg-white/10 hover:border-cyan-500/30 duration-300"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        Learn More <ArrowRight size={16} />
-                      </motion.button>
                     )}
                   </div>
                 </div>
               </motion.div>
             ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-12">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded-lg bg-white/5 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition border border-white/10"
+            >
+              Previous
+            </button>
+            
+            <div className="flex gap-1">
+              {[...Array(totalPages)].map((_, index) => {
+                const page = index + 1;
+                // Show first page, last page, and pages around current page
+                if (
+                  page === 1 ||
+                  page === totalPages ||
+                  Math.abs(page - currentPage) <= 1
+                ) {
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      className={`w-10 h-10 rounded-lg transition ${
+                        currentPage === page
+                          ? 'bg-cyan-500 text-black font-medium'
+                          : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                } else if (
+                  page === 2 && currentPage > 3 ||
+                  page === totalPages - 1 && currentPage < totalPages - 2
+                ) {
+                  return <span key={page} className="w-10 h-10 flex items-center justify-center text-slate-500">...</span>;
+                }
+                return null;
+              })}
+            </div>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 rounded-lg bg-white/5 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition border border-white/10"
+            >
+              Next
+            </button>
           </div>
         )}
       </motion.section>

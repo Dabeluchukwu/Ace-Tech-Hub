@@ -184,6 +184,7 @@ export const getMe = async () => {
 };
 
 // ============ SERVICES ============
+
 export const getServices = async (params = {}) => {
   const response = await apiClient.get('/api/services', { params });
   return response.data;
@@ -213,6 +214,7 @@ export const toggleFeatured = async (id) => {
   const response = await apiClient.put(`/api/services/${id}/toggle-featured`);
   return response.data;
 };
+
 
 // ============ BLOG ============
 export const getBlogs = async (params = {}) => {
@@ -336,3 +338,5 @@ export const deleteImage = async (key) => {
     throw error;
   }
 };
+
+
