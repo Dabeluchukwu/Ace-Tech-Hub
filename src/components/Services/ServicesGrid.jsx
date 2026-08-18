@@ -13,18 +13,73 @@ import {
   Server,
 } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+
+// Animation variants
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
+
+const fadeLeft = {
+  hidden: { opacity: 0, x: -40 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 40 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    }
+  }
+};
+
+const staggerCards = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.3,
+    }
+  }
+};
 
 export default function ServicesGrid() {
   return (
-    <div className="max-w-6xl mx-auto">
+    <motion.div 
+      className="max-w-6xl mx-auto"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.05 }}
+      variants={staggerCards}
+    >
       {/* SERVICE 1 - Web Development */}
-      <section id="web-development" className="mb-20 scroll-mt-20"> {/* ✅ Added ID */}
+      <motion.section 
+        id="web-development" 
+        className="mb-20 scroll-mt-20"
+        variants={fadeUp}
+        whileHover={{ y: -5 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="grid md:grid-cols-5 gap-8 items-start">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-cyan-500/10 rounded-xl">
+              <motion.div 
+                className="p-3 bg-cyan-500/10 rounded-xl"
+                whileHover={{ rotate: 10, scale: 1.1 }}
+                transition={{ duration: 0.2 }}
+              >
                 <Code2 className="text-cyan-400 w-8 h-8" />
-              </div>
+              </motion.div>
               <span className="text-xs bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/20">
                 Core Service
               </span>
@@ -41,53 +96,70 @@ export default function ServicesGrid() {
               our solutions handle millions of users without breaking a sweat.
             </p>
             <div className="grid md:grid-cols-2 gap-6">
-              <div>
+              <motion.div variants={staggerContainer}>
                 <h4 className="font-semibold text-cyan-400 mb-2">What We Build:</h4>
                 <ul className="space-y-2 text-gray-400">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Enterprise web applications (React, Next.js)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>E-commerce platforms with payment integration</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Custom CMS and content platforms</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Progressive Web Apps (PWAs) with offline support</span>
-                  </li>
+                  {[
+                    "Enterprise web applications (React, Next.js)",
+                    "E-commerce platforms with payment integration",
+                    "Custom CMS and content platforms",
+                    "Progressive Web Apps (PWAs) with offline support",
+                  ].map((text, index) => (
+                    <motion.li 
+                      key={index}
+                      className="flex items-start gap-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.1 * index, duration: 0.4 }}
+                    >
+                      <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
+                      <span>{text}</span>
+                    </motion.li>
+                  ))}
                 </ul>
-              </div>
-              <div>
+              </motion.div>
+              <motion.div variants={staggerContainer}>
                 <h4 className="font-semibold text-cyan-400 mb-2">Tech Stack:</h4>
                 <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 bg-[#0f172a] rounded-full text-xs text-gray-300 border border-white/5">React</span>
-                  <span className="px-3 py-1 bg-[#0f172a] rounded-full text-xs text-gray-300 border border-white/5">Next.js</span>
-                  <span className="px-3 py-1 bg-[#0f172a] rounded-full text-xs text-gray-300 border border-white/5">JavaScript (ES6+)</span>
-                  <span className="px-3 py-1 bg-[#0f172a] rounded-full text-xs text-gray-300 border border-white/5">TypeScript</span>
-                  <span className="px-3 py-1 bg-[#0f172a] rounded-full text-xs text-gray-300 border border-white/5">Tailwind CSS</span>
-                  <span className="px-3 py-1 bg-[#0f172a] rounded-full text-xs text-gray-300 border border-white/5">Vite</span>
-                  <span className="px-3 py-1 bg-[#0f172a] rounded-full text-xs text-gray-300 border border-white/5">Node.js</span>
-                  <span className="px-3 py-1 bg-[#0f172a] rounded-full text-xs text-gray-300 border border-white/5">Express.js</span>
+                  {["React", "Next.js", "JavaScript (ES6+)", "TypeScript", "Tailwind CSS", "Vite", "Node.js", "Express.js"].map((tech, index) => (
+                    <motion.span 
+                      key={index}
+                      className="px-3 py-1 bg-[#0f172a] rounded-full text-xs text-gray-300 border border-white/5"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.05 * index, duration: 0.3 }}
+                      whileHover={{ scale: 1.1, borderColor: "rgba(34,211,238,0.3)" }}
+                    >
+                      {tech}
+                    </motion.span>
+                  ))}
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* SERVICE 2 - Consultancy */}
-      <section id="consultancy" className="mb-20 bg-[#1a2438]/30 rounded-3xl p-8 md:p-12 border border-cyan-400/10 scroll-mt-20"> {/* ✅ Added ID */}
+      <motion.section 
+        id="consultancy" 
+        className="mb-20 bg-[#1a2438]/30 rounded-3xl p-8 md:p-12 border border-cyan-400/10 scroll-mt-20"
+        variants={fadeUp}
+        whileHover={{ y: -5 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="grid md:grid-cols-5 gap-8 items-start">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-cyan-500/20 rounded-xl">
+              <motion.div 
+                className="p-3 bg-cyan-500/20 rounded-xl"
+                whileHover={{ rotate: 10, scale: 1.1 }}
+                transition={{ duration: 0.2 }}
+              >
                 <Wrench className="text-cyan-400 w-8 h-8" />
-              </div>
+              </motion.div>
               <span className="text-xs bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/30">
                 Strategic
               </span>
@@ -104,61 +176,75 @@ export default function ServicesGrid() {
               technology selection, and digital transformation.
             </p>
             <div className="grid md:grid-cols-2 gap-6">
-              <div>
+              <motion.div variants={staggerContainer}>
                 <h4 className="font-semibold text-cyan-400 mb-2">Our Approach:</h4>
                 <ul className="space-y-2 text-gray-400">
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full flex-shrink-0 mt-2" />
-                    <span><strong className="text-white">Technology Audit:</strong> Comprehensive assessment of your current stack</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full flex-shrink-0 mt-2" />
-                    <span><strong className="text-white">Scaling Roadmap:</strong> Strategic plan for growth and infrastructure</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full flex-shrink-0 mt-2" />
-                    <span><strong className="text-white">Architecture Design:</strong> Blueprints for scalable, resilient systems</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full flex-shrink-0 mt-2" />
-                    <span><strong className="text-white">Tech Stack Advisory:</strong> Data-driven technology recommendations</span>
-                  </li>
+                  {[
+                    { strong: "Technology Audit:", text: "Comprehensive assessment of your current stack" },
+                    { strong: "Scaling Roadmap:", text: "Strategic plan for growth and infrastructure" },
+                    { strong: "Architecture Design:", text: "Blueprints for scalable, resilient systems" },
+                    { strong: "Tech Stack Advisory:", text: "Data-driven technology recommendations" },
+                  ].map((item, index) => (
+                    <motion.li 
+                      key={index}
+                      className="flex items-start gap-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.1 * index, duration: 0.4 }}
+                    >
+                      <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full flex-shrink-0 mt-2" />
+                      <span><strong className="text-white">{item.strong}</strong> {item.text}</span>
+                    </motion.li>
+                  ))}
                 </ul>
-              </div>
-              <div>
+              </motion.div>
+              <motion.div variants={staggerContainer}>
                 <h4 className="font-semibold text-cyan-400 mb-2">Who Benefits:</h4>
                 <ul className="space-y-2 text-gray-400">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Startups scaling from MVP to production</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Enterprises modernizing legacy systems</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Companies planning digital transformation</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Venture-backed tech companies</span>
-                  </li>
+                  {[
+                    "Startups scaling from MVP to production",
+                    "Enterprises modernizing legacy systems",
+                    "Companies planning digital transformation",
+                    "Venture-backed tech companies",
+                  ].map((text, index) => (
+                    <motion.li 
+                      key={index}
+                      className="flex items-start gap-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.1 * index, duration: 0.4 }}
+                    >
+                      <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
+                      <span>{text}</span>
+                    </motion.li>
+                  ))}
                 </ul>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* SERVICE 3 - Full Stack */}
-      <section id="full-stack" className="mb-20 scroll-mt-20"> {/* ✅ Added ID */}
+      <motion.section 
+        id="full-stack" 
+        className="mb-20 scroll-mt-20"
+        variants={fadeUp}
+        whileHover={{ y: -5 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="grid md:grid-cols-5 gap-8 items-start">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-cyan-500/10 rounded-xl">
+              <motion.div 
+                className="p-3 bg-cyan-500/10 rounded-xl"
+                whileHover={{ rotate: 10, scale: 1.1 }}
+                transition={{ duration: 0.2 }}
+              >
                 <Layers className="text-cyan-400 w-8 h-8" />
-              </div>
+              </motion.div>
               <span className="text-xs bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/20">
                 End-to-End
               </span>
@@ -175,61 +261,75 @@ export default function ServicesGrid() {
               cohesive, integrated solutions.
             </p>
             <div className="grid md:grid-cols-2 gap-6">
-              <div>
+              <motion.div variants={staggerContainer}>
                 <h4 className="font-semibold text-cyan-400 mb-2">Frontend:</h4>
                 <ul className="space-y-2 text-gray-400">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Responsive, accessible UI/UX implementations</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Component-based architecture with React</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>State management (Zustand, React Query)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Performance optimization & SEO</span>
-                  </li>
+                  {[
+                    "Responsive, accessible UI/UX implementations",
+                    "Component-based architecture with React",
+                    "State management (Zustand, React Query)",
+                    "Performance optimization & SEO",
+                  ].map((text, index) => (
+                    <motion.li 
+                      key={index}
+                      className="flex items-start gap-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.1 * index, duration: 0.4 }}
+                    >
+                      <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
+                      <span>{text}</span>
+                    </motion.li>
+                  ))}
                 </ul>
-              </div>
-              <div>
+              </motion.div>
+              <motion.div variants={staggerContainer}>
                 <h4 className="font-semibold text-cyan-400 mb-2">Backend:</h4>
                 <ul className="space-y-2 text-gray-400">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>RESTful APIs with Node.js & Express.js</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Database design (MongoDB with Mongoose)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Authentication & authorization (JWT, RBAC)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Real-time features with Socket.IO</span>
-                  </li>
+                  {[
+                    "RESTful APIs with Node.js & Express.js",
+                    "Database design (MongoDB with Mongoose)",
+                    "Authentication & authorization (JWT, RBAC)",
+                    "Real-time features with Socket.IO",
+                  ].map((text, index) => (
+                    <motion.li 
+                      key={index}
+                      className="flex items-start gap-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.1 * index, duration: 0.4 }}
+                    >
+                      <CheckCircle size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
+                      <span>{text}</span>
+                    </motion.li>
+                  ))}
                 </ul>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* SERVICE 4 - Cloud Architecture */}
-      <section id="cloud-architecture" className="bg-[#1a2438]/30 rounded-3xl p-8 md:p-12 border border-white/5 scroll-mt-20"> {/* ✅ Added ID */}
+      <motion.section 
+        id="cloud-architecture" 
+        className="bg-[#1a2438]/30 rounded-3xl p-8 md:p-12 border border-white/5 scroll-mt-20"
+        variants={fadeUp}
+        whileHover={{ y: -5 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="grid md:grid-cols-5 gap-8 items-start">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-cyan-500/10 rounded-xl">
+              <motion.div 
+                className="p-3 bg-cyan-500/10 rounded-xl"
+                whileHover={{ rotate: 10, scale: 1.1 }}
+                transition={{ duration: 0.2 }}
+              >
                 <Cloud className="text-cyan-400 w-8 h-8" />
-              </div>
+              </motion.div>
               <span className="text-xs bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/20">
                 Infrastructure
               </span>
@@ -246,37 +346,33 @@ export default function ServicesGrid() {
               user base while maintaining enterprise-grade security.
             </p>
             <div className="grid md:grid-cols-3 gap-4">
-              <div className="bg-[#0f172a] p-4 rounded-xl">
-                <Server className="text-cyan-400 w-5 h-5 mb-2" />
-                <h4 className="font-semibold text-sm text-white mb-1">Infrastructure</h4>
-                <ul className="text-xs text-gray-400 space-y-1">
-                  <li>MongoDB Atlas</li>
-                  <li>Vercel & Render</li>
-                  <li>Cloudflare Turnstile</li>
-                </ul>
-              </div>
-              <div className="bg-[#0f172a] p-4 rounded-xl">
-                <Shield className="text-cyan-400 w-5 h-5 mb-2" />
-                <h4 className="font-semibold text-sm text-white mb-1">Security</h4>
-                <ul className="text-xs text-gray-400 space-y-1">
-                  <li>JWT & bcrypt</li>
-                  <li>RBAC authorization</li>
-                  <li>HTTPS/TLS encryption</li>
-                </ul>
-              </div>
-              <div className="bg-[#0f172a] p-4 rounded-xl">
-                <Gauge className="text-cyan-400 w-5 h-5 mb-2" />
-                <h4 className="font-semibold text-sm text-white mb-1">Performance</h4>
-                <ul className="text-xs text-gray-400 space-y-1">
-                  <li>Auto-scaling</li>
-                  <li>CDN & edge computing</li>
-                  <li>Load balancing</li>
-                </ul>
-              </div>
+              {[
+                { icon: Server, title: "Infrastructure", items: ["MongoDB Atlas", "Vercel & Render", "Cloudflare Turnstile"] },
+                { icon: Shield, title: "Security", items: ["JWT & bcrypt", "RBAC authorization", "HTTPS/TLS encryption"] },
+                { icon: Gauge, title: "Performance", items: ["Auto-scaling", "CDN & edge computing", "Load balancing"] },
+              ].map((item, colIndex) => (
+                <motion.div 
+                  key={colIndex}
+                  className="bg-[#0f172a] p-4 rounded-xl"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 * colIndex, duration: 0.4 }}
+                  whileHover={{ y: -5 }}
+                >
+                  <item.icon className="text-cyan-400 w-5 h-5 mb-2" />
+                  <h4 className="font-semibold text-sm text-white mb-1">{item.title}</h4>
+                  <ul className="text-xs text-gray-400 space-y-1">
+                    {item.items.map((text, idx) => (
+                      <li key={idx}>{text}</li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }

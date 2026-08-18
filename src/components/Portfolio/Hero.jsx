@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { ArrowRight, Loader2, Search, X, Grid3x3, LayoutGrid, Filter, ImageIcon } from "lucide-react";
 import { getServices } from "@/lib/api";
+import { motion } from "framer-motion";
 
 // Fallback filters if no services exist
 const defaultFilters = [
@@ -12,6 +13,34 @@ const defaultFilters = [
   "Cloud Solutions",
   "Enterprise Software",
 ];
+
+// Animation variants
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    }
+  }
+};
+
+const staggerCards = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.3,
+    }
+  }
+};
 
 export default function PortfolioHero() {
   const [activeFilter, setActiveFilter] = useState("All Projects");
@@ -97,7 +126,12 @@ export default function PortfolioHero() {
   if (loading) {
     return (
       <main className="min-h-screen bg-[#020617] px-6 md:px-16 py-16 text-white">
-        <section className="max-w-6xl mx-auto mb-16">
+        <motion.section 
+          className="max-w-6xl mx-auto mb-16"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="w-16 h-[2px] bg-cyan-400 mb-6"></div>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             Our <span className="text-cyan-400">Portfolio</span>
@@ -105,7 +139,7 @@ export default function PortfolioHero() {
           <p className="mt-4 text-slate-400 max-w-xl text-lg">
             Exploring the intersection of technical precision and creative momentum.
           </p>
-        </section>
+        </motion.section>
         
         <section className="max-w-6xl mx-auto grid md:grid-cols-2 gap-6">
           {[1, 2, 3, 4].map((i) => (
@@ -131,7 +165,12 @@ export default function PortfolioHero() {
   if (error) {
     return (
       <main className="min-h-screen bg-[#020617] px-6 md:px-16 py-16 text-white">
-        <section className="max-w-6xl mx-auto">
+        <motion.section 
+          className="max-w-6xl mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="w-16 h-[2px] bg-cyan-400 mb-6"></div>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             Our <span className="text-cyan-400">Portfolio</span>
@@ -149,7 +188,7 @@ export default function PortfolioHero() {
               Try Again
             </button>
           </div>
-        </section>
+        </motion.section>
       </main>
     );
   }
@@ -158,7 +197,12 @@ export default function PortfolioHero() {
   if (services.length === 0) {
     return (
       <main className="min-h-screen bg-[#020617] px-6 md:px-16 py-16 text-white">
-        <section className="max-w-6xl mx-auto">
+        <motion.section 
+          className="max-w-6xl mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="w-16 h-[2px] bg-cyan-400 mb-6"></div>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             Our <span className="text-cyan-400">Portfolio</span>
@@ -180,26 +224,48 @@ export default function PortfolioHero() {
               </span>
             </div>
           </div>
-        </section>
+        </motion.section>
       </main>
     );
   }
 
   // Main Render
   return (
-    <main className="min-h-screen bg-[#020617] px-6 md:px-16 py-16 text-white">
+    <motion.main 
+      className="min-h-screen bg-[#020617] px-6 md:px-16 py-16 text-white"
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer}
+    >
       
       {/* Hero Section */}
-      <section className="max-w-6xl mx-auto mb-12">
-        <div className="w-16 h-[2px] bg-cyan-400 mb-6"></div>
-        <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+      <motion.section 
+        className="max-w-6xl mx-auto mb-12"
+        variants={fadeUp}
+      >
+        <motion.div 
+          className="w-16 h-[2px] bg-cyan-400 mb-6"
+          initial={{ width: 0 }}
+          animate={{ width: 64 }}
+          transition={{ duration: 0.6 }}
+        />
+        <motion.h1 
+          className="text-4xl md:text-6xl font-bold leading-tight"
+          variants={fadeUp}
+        >
           Our <span className="text-cyan-400">Portfolio</span>
-        </h1>
-        <p className="mt-4 text-slate-400 max-w-xl text-lg">
+        </motion.h1>
+        <motion.p 
+          className="mt-4 text-slate-400 max-w-xl text-lg"
+          variants={fadeUp}
+        >
           Exploring the intersection of technical precision and creative momentum.
-        </p>
+        </motion.p>
         
-        <div className="mt-6 flex flex-wrap items-center gap-6">
+        <motion.div 
+          className="mt-6 flex flex-wrap items-center gap-6"
+          variants={fadeUp}
+        >
           <span className="text-sm text-slate-500">
             {services.length} {services.length === 1 ? 'project' : 'projects'} available
           </span>
@@ -213,14 +279,20 @@ export default function PortfolioHero() {
               🔍 {filteredProjects.length} results
             </span>
           )}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       {/* Search and Filter Bar */}
-      <section className="max-w-6xl mx-auto mb-10">
+      <motion.section 
+        className="max-w-6xl mx-auto mb-10"
+        variants={staggerContainer}
+      >
         <div className="flex flex-col md:flex-row md:items-center gap-4">
           <div className="flex-1 relative">
-            <div className="relative">
+            <motion.div 
+              className="relative"
+              variants={fadeUp}
+            >
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
               <input
                 type="text"
@@ -237,7 +309,7 @@ export default function PortfolioHero() {
                   <X size={16} />
                 </button>
               )}
-            </div>
+            </motion.div>
           </div>
 
           <div className="flex md:hidden items-center gap-2 overflow-x-auto pb-2">
@@ -284,12 +356,18 @@ export default function PortfolioHero() {
             </>
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* Projects Grid */}
-      <section className="max-w-6xl mx-auto">
+      <motion.section 
+        className="max-w-6xl mx-auto"
+        variants={staggerCards}
+      >
         {filteredProjects.length === 0 ? (
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-12 text-center">
+          <motion.div 
+            className="bg-white/5 border border-white/10 rounded-3xl p-12 text-center"
+            variants={fadeUp}
+          >
             <div className="text-5xl mb-4">🔍</div>
             <h3 className="text-xl font-semibold text-white mb-2">
               No matching projects
@@ -310,13 +388,16 @@ export default function PortfolioHero() {
                 Clear all filters →
               </button>
             )}
-          </div>
+          </motion.div>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
             {filteredProjects.map((p, i) => (
-              <div
+              <motion.div
                 key={p.id || i}
                 className={`group relative rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br ${p.gradient} p-6 md:p-8 min-h-[280px] flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cyan-500/10`}
+                variants={fadeUp}
+                whileHover={{ y: -8 }}
+                transition={{ duration: 0.3 }}
               >
                 {/* Animated Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -328,7 +409,11 @@ export default function PortfolioHero() {
                 <div className="relative z-10 flex flex-col h-full">
                   {/* Featured Image */}
                   {p.imageUrl && (
-                    <div className="mb-4 rounded-xl overflow-hidden h-48 w-full">
+                    <motion.div 
+                      className="mb-4 rounded-xl overflow-hidden h-48 w-full"
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ duration: 0.3 }}
+                    >
                       <img
                         src={p.imageUrl}
                         alt={p.title}
@@ -337,7 +422,7 @@ export default function PortfolioHero() {
                           e.target.style.display = 'none';
                         }}
                       />
-                    </div>
+                    </motion.div>
                   )}
 
                   {/* Tags */}
@@ -384,26 +469,32 @@ export default function PortfolioHero() {
                   {/* Action Button */}
                   <div className="mt-6">
                     {p.button && p.liveUrl ? (
-                      <a
+                      <motion.a
                         href={p.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition bg-gradient-to-r from-cyan-400 to-blue-500 text-black hover:opacity-90 hover:scale-105 duration-300 shadow-lg shadow-cyan-500/25"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
                         View Project <ArrowRight size={16} />
-                      </a>
+                      </motion.a>
                     ) : (
-                      <button className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition border border-white/20 text-white hover:bg-white/10 hover:border-cyan-500/30 duration-300">
+                      <motion.button 
+                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition border border-white/20 text-white hover:bg-white/10 hover:border-cyan-500/30 duration-300"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
                         Learn More <ArrowRight size={16} />
-                      </button>
+                      </motion.button>
                     )}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
-      </section>
-    </main>
+      </motion.section>
+    </motion.main>
   );
 }

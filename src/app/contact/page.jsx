@@ -15,6 +15,38 @@ import {
   Loader2,
 } from "lucide-react";
 import { sendMessage } from "@/lib/api";
+import { motion } from "framer-motion";
+
+// Animation variants
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const fadeLeft = {
+  hidden: { opacity: 0, x: -40 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } }
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 40 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    }
+  }
+};
+
+const scaleOnHover = {
+  hover: { scale: 1.05, transition: { duration: 0.2 } }
+};
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -53,7 +85,6 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Mark all fields as touched
     const allTouched = {};
     Object.keys(formData).forEach(key => {
       allTouched[key] = true;
@@ -82,7 +113,6 @@ export default function Contact() {
       });
       setTouched({});
       
-      // Auto-hide success message after 5 seconds
       setTimeout(() => {
         setSuccess(false);
       }, 5000);
@@ -108,12 +138,17 @@ export default function Contact() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#081028] to-[#0b1a3a] text-white px-6 pt-24 pb-12">
+    <motion.main 
+      className="min-h-screen bg-gradient-to-br from-[#081028] to-[#0b1a3a] text-white px-6 pt-24 pb-12"
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer}
+    >
       {/* TOP SECTION */}
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-start">
         {/* LEFT */}
-        <div className="space-y-8">
-          <div>
+        <motion.div className="space-y-8" variants={fadeLeft}>
+          <motion.div variants={fadeUp}>
             <p className="text-xs tracking-[0.3em] text-cyan-400 mb-4 font-medium">
               — GET IN TOUCH
             </p>
@@ -121,63 +156,82 @@ export default function Contact() {
               Ignite Your <br />
               <span className="text-cyan-400">Digital Vision</span>
             </h1>
-          </div>
+          </motion.div>
 
-          <p className="text-gray-400 max-w-md leading-relaxed">
+          <motion.p 
+            className="text-gray-400 max-w-md leading-relaxed"
+            variants={fadeUp}
+          >
             Whether you're scaling a startup or modernizing an enterprise, our
             consultancy bridges the gap between complex tech and human impact.
-          </p>
+          </motion.p>
 
           {/* CONTACT CARDS */}
-          <div className="space-y-4">
-            <div className="bg-[#0f1c3d] p-4 rounded-xl flex items-center gap-4 border border-white/5 hover:border-cyan-400/30 transition group">
-              <div className="p-2 bg-cyan-500/10 rounded-lg group-hover:bg-cyan-500/20 transition">
-                <Mail className="text-cyan-400" size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 tracking-wider">EMAIL US</p>
-                <p className="text-sm text-white">acetechhub.africa@gmail.com</p>
-              </div>
-            </div>
+          <motion.div className="space-y-4" variants={staggerContainer}>
+            {[
+              { icon: Mail, label: "EMAIL US", value: "acetechhub.africa@gmail.com" },
+              { icon: Phone, label: "CALL EXPERTS", value: "+234 705 882 5172" },
+              { icon: MapPin, label: "HEADQUARTERS", value: "Anambra • Nigeria • Remote" },
+            ].map((item, index) => (
+              <motion.div 
+                key={index}
+                className="bg-[#0f1c3d] p-4 rounded-xl flex items-center gap-4 border border-white/5 hover:border-cyan-400/30 transition group"
+                variants={fadeUp}
+                whileHover={{ x: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <motion.div 
+                  className="p-2 bg-cyan-500/10 rounded-lg group-hover:bg-cyan-500/20 transition"
+                  whileHover={{ rotate: 10, scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <item.icon className="text-cyan-400" size={20} />
+                </motion.div>
+                <div>
+                  <p className="text-xs text-gray-400 tracking-wider">{item.label}</p>
+                  <p className="text-sm text-white">{item.value}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
 
-            <div className="bg-[#0f1c3d] p-4 rounded-xl flex items-center gap-4 border border-white/5 hover:border-cyan-400/30 transition group">
-              <div className="p-2 bg-cyan-500/10 rounded-lg group-hover:bg-cyan-500/20 transition">
-                <Phone className="text-cyan-400" size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 tracking-wider">CALL EXPERTS</p>
-                <p className="text-sm text-white">+234 705 882 5172</p>
-              </div>
-            </div>
-
-            <div className="bg-[#0f1c3d] p-4 rounded-xl flex items-center gap-4 border border-white/5 hover:border-cyan-400/30 transition group">
-              <div className="p-2 bg-cyan-500/10 rounded-lg group-hover:bg-cyan-500/20 transition">
-                <MapPin className="text-cyan-400" size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 tracking-wider">HEADQUARTERS</p>
-                <p className="text-sm text-white">Anambra • Nigeria • Remote</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 pt-4">
+          <motion.div 
+            className="flex items-center gap-3 pt-4"
+            variants={fadeUp}
+          >
             <div className="flex -space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-xs font-bold text-black">JD</div>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-xs font-bold text-black">SK</div>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-xs font-bold text-black">MR</div>
+              {["JD", "SK", "MR"].map((initials, index) => (
+                <motion.div 
+                  key={index}
+                  className={`w-8 h-8 rounded-full bg-gradient-to-br ${
+                    index === 0 ? 'from-cyan-400 to-blue-500' :
+                    index === 1 ? 'from-purple-400 to-pink-500' :
+                    'from-orange-400 to-red-500'
+                  } flex items-center justify-center text-xs font-bold text-black`}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 + index * 0.1, duration: 0.3 }}
+                >
+                  {initials}
+                </motion.div>
+              ))}
             </div>
             <p className="text-xs text-gray-500 tracking-wider">
               JOIN COMPANIES SCALING WITH US
             </p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* RIGHT FORM */}
-        <div className="bg-[#0f1c3d] p-8 rounded-2xl border border-cyan-500/20 shadow-xl shadow-cyan-500/5">
+        <motion.div 
+          className="bg-[#0f1c3d] p-8 rounded-2xl border border-cyan-500/20 shadow-xl shadow-cyan-500/5"
+          variants={fadeRight}
+          whileHover={{ boxShadow: "0 0 60px rgba(34,211,238,0.05)" }}
+          transition={{ duration: 0.3 }}
+        >
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
+              <motion.div variants={fadeUp}>
                 <input
                   name="name"
                   placeholder="Full Name"
@@ -191,10 +245,16 @@ export default function Contact() {
                   }`}
                 />
                 {getFieldError('name') && (
-                  <p className="text-xs text-red-400 mt-1">{getFieldError('name')}</p>
+                  <motion.p 
+                    className="text-xs text-red-400 mt-1"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    {getFieldError('name')}
+                  </motion.p>
                 )}
-              </div>
-              <div>
+              </motion.div>
+              <motion.div variants={fadeUp}>
                 <input
                   name="email"
                   type="email"
@@ -209,12 +269,18 @@ export default function Contact() {
                   }`}
                 />
                 {getFieldError('email') && (
-                  <p className="text-xs text-red-400 mt-1">{getFieldError('email')}</p>
+                  <motion.p 
+                    className="text-xs text-red-400 mt-1"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    {getFieldError('email')}
+                  </motion.p>
                 )}
-              </div>
+              </motion.div>
             </div>
 
-            <div className="mb-4">
+            <motion.div className="mb-4" variants={fadeUp}>
               <input
                 name="phone"
                 placeholder="Phone Number (Optional)"
@@ -222,9 +288,9 @@ export default function Contact() {
                 onChange={handleChange}
                 className="w-full bg-[#1a274f] p-3 rounded-lg text-sm outline-none border-2 border-transparent focus:border-cyan-400/50 transition"
               />
-            </div>
+            </motion.div>
 
-            <div className="mb-4">
+            <motion.div className="mb-4" variants={fadeUp}>
               <input
                 name="subject"
                 placeholder="Subject"
@@ -238,11 +304,17 @@ export default function Contact() {
                 }`}
               />
               {getFieldError('subject') && (
-                <p className="text-xs text-red-400 mt-1">{getFieldError('subject')}</p>
+                <motion.p 
+                  className="text-xs text-red-400 mt-1"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  {getFieldError('subject')}
+                </motion.p>
               )}
-            </div>
+            </motion.div>
 
-            <div className="mb-6">
+            <motion.div className="mb-6" variants={fadeUp}>
               <textarea
                 name="message"
                 rows={5}
@@ -257,19 +329,34 @@ export default function Contact() {
                 }`}
               />
               {getFieldError('message') && (
-                <p className="text-xs text-red-400 mt-1">{getFieldError('message')}</p>
+                <motion.p 
+                  className="text-xs text-red-400 mt-1"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  {getFieldError('message')}
+                </motion.p>
               )}
-            </div>
+            </motion.div>
 
             {error && (
-              <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg mb-4">
+              <motion.div 
+                className="flex items-start gap-2 bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg mb-4"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
                 <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
                 <p className="text-sm">{error}</p>
-              </div>
+              </motion.div>
             )}
 
             {success && (
-              <div className="flex items-start gap-2 bg-green-500/10 border border-green-500/20 text-green-400 p-3 rounded-lg mb-4">
+              <motion.div 
+                className="flex items-start gap-2 bg-green-500/10 border border-green-500/20 text-green-400 p-3 rounded-lg mb-4"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", duration: 0.5 }}
+              >
                 <CheckCircle size={18} className="flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-medium">Message Sent Successfully!</p>
@@ -277,13 +364,17 @@ export default function Contact() {
                     We'll get back to you within 24 hours.
                   </p>
                 </div>
-              </div>
+              </motion.div>
             )}
 
-            <button
+            <motion.button
               type="submit"
               disabled={loading}
               className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-black px-6 py-3 rounded-full font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              variants={fadeUp}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2 }}
             >
               {loading ? (
                 <>
@@ -296,66 +387,85 @@ export default function Contact() {
                   <Send size={16} />
                 </>
               )}
-            </button>
+            </motion.button>
 
-            <div className="mt-4 text-xs text-gray-400 flex items-center justify-center gap-2">
+            <motion.div 
+              className="mt-4 text-xs text-gray-400 flex items-center justify-center gap-2"
+              variants={fadeUp}
+            >
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
               AVERAGE RESPONSE TIME: WITHIN 24 HOURS
-            </div>
+            </motion.div>
           </form>
-        </div>
+        </motion.div>
       </div>
 
       {/* BOTTOM SECTION */}
-      <div className="max-w-6xl mx-auto mt-20 text-center">
-        <div className="mb-12">
+      <motion.div 
+        className="max-w-6xl mx-auto mt-20 text-center"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <motion.div 
+          className="mb-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
           <p className="text-xs tracking-[0.3em] text-cyan-400 mb-3 font-medium">
             WHY WORK WITH US
           </p>
           <h2 className="text-3xl font-semibold">
             Engineering <span className="text-cyan-400">Excellence</span>
           </h2>
-          <div className="w-16 h-[2px] bg-cyan-400 mx-auto mt-4"></div>
-        </div>
+          <motion.div 
+            className="w-16 h-[2px] bg-cyan-400 mx-auto mt-4"
+            initial={{ width: 0 }}
+            whileInView={{ width: 64 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          />
+        </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {/* CARD 1 */}
-          <div className="bg-[#0f1c3d] p-6 rounded-xl text-left border border-white/5 hover:border-cyan-400/30 transition group">
-            <div className="p-3 bg-cyan-500/10 rounded-lg w-fit mb-4 group-hover:bg-cyan-500/20 transition">
-              <Code className="text-cyan-400" size={24} />
-            </div>
-            <h3 className="font-semibold text-white mb-2">Modern Stack</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Leveraging React, Node, and Next.js to build bulletproof architectures
-              that scale infinitely.
-            </p>
-          </div>
-
-          {/* CARD 2 - Highlighted */}
-          <div className="bg-[#0f1c3d] p-6 rounded-xl text-left border border-cyan-400/20 shadow-[0_0_20px_rgba(34,211,238,0.05)]">
-            <div className="p-3 bg-cyan-500/20 rounded-lg w-fit mb-4">
-              <Cloud className="text-cyan-400" size={24} />
-            </div>
-            <h3 className="font-semibold text-white mb-2">Cloud Native</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              AWS, Azure, and Google Cloud experts ensuring your uptime remains
-              at 99.99% globally.
-            </p>
-          </div>
-
-          {/* CARD 3 */}
-          <div className="bg-[#0f1c3d] p-6 rounded-xl text-left border border-white/5 hover:border-cyan-400/30 transition group">
-            <div className="p-3 bg-cyan-500/10 rounded-lg w-fit mb-4 group-hover:bg-cyan-500/20 transition">
-              <Shield className="text-cyan-400" size={24} />
-            </div>
-            <h3 className="font-semibold text-white mb-2">Security First</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Enterprise-grade security protocols baked into every line of code
-              from day one.
-            </p>
-          </div>
+          {[
+            { icon: Code, title: "Modern Stack", desc: "Leveraging React, Node, and Next.js to build bulletproof architectures that scale infinitely." },
+            { icon: Cloud, title: "Cloud Native", desc: "AWS, Azure, and Google Cloud experts ensuring your uptime remains at 99.99% globally.", highlight: true },
+            { icon: Shield, title: "Security First", desc: "Enterprise-grade security protocols baked into every line of code from day one." },
+          ].map((item, index) => (
+            <motion.div 
+              key={index}
+              className={`p-6 rounded-xl text-left border transition group ${
+                item.highlight 
+                  ? 'bg-[#0f1c3d] border-cyan-400/20 shadow-[0_0_20px_rgba(34,211,238,0.05)]' 
+                  : 'bg-[#0f1c3d] border-white/5 hover:border-cyan-400/30'
+              }`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 * index, duration: 0.4 }}
+              whileHover={{ y: -5 }}
+            >
+              <motion.div 
+                className={`p-3 rounded-lg w-fit mb-4 transition ${
+                  item.highlight 
+                    ? 'bg-cyan-500/20' 
+                    : 'bg-cyan-500/10 group-hover:bg-cyan-500/20'
+                }`}
+                whileHover={{ rotate: 10, scale: 1.1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <item.icon className="text-cyan-400" size={24} />
+              </motion.div>
+              <h3 className="font-semibold text-white mb-2">{item.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+            </motion.div>
+          ))}
         </div>
-      </div>
-    </main>
+      </motion.div>
+    </motion.main>
   );
 }
