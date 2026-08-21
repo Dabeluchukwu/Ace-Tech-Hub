@@ -181,7 +181,7 @@ export default function Hero() {
                 <span className="text-sm text-cyan-400">Founder</span>
               </motion.div>
               <h3 className="text-xl font-semibold text-white">
-                Nwabueze Dabeluchukwu
+                Nwabueze Dabeluchukwu Chinaza
               </h3>
               <p className="text-sm text-gray-400 mt-1">
                 Leading Digital Innovation at ACE TECH HUB
@@ -241,7 +241,7 @@ export default function Hero() {
     viewport={{ once: true }}
     transition={{ delay: 0.2, duration: 0.5 }}
   >
-    My name is Nwabueze Dabeluchukwu, and I'm a Software Developer with a mission. 
+    My name is Nwabueze Dabeluchukwu Chinaza, and I'm a Software Developer with a mission. 
     I founded ACE TECH HUB because I saw a gap between what businesses needed 
     and what technology was delivering.
   </motion.p>
