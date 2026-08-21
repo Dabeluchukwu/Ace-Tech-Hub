@@ -241,7 +241,7 @@ export default function Hero() {
     viewport={{ once: true }}
     transition={{ delay: 0.2, duration: 0.5 }}
   >
-    My name is Nwabueze Dabeluchukwu, and I'm a technologist with a mission. 
+    My name is Nwabueze Dabeluchukwu, and I'm a Software Developer with a mission. 
     I founded ACE TECH HUB because I saw a gap between what businesses needed 
     and what technology was delivering.
   </motion.p>
