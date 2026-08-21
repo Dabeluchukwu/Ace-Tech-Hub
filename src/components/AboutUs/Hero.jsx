@@ -209,53 +209,82 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
             />
 
-            <motion.h2 
-              className="text-3xl font-semibold mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-            >
-              Our Story
-            </motion.h2>
+            {/* TEXT - COMPLETE REWRITE */}
+<motion.div
+  initial={{ opacity: 0, x: 50 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.7, ease: "easeOut" }}
+>
+  {/* <motion.div 
+    className="w-10 h-[2px] bg-cyan-400 mb-4"
+    initial={{ width: 0 }}
+    whileInView={{ width: 40 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.6, delay: 0.2 }}
+  /> */}
 
-            <motion.p 
-              className="text-gray-400 mb-6 leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              ACE TECH HUB emerged from a simple observation: most digital
-              systems are either rigid structures that break or fluid
-              experiments that fail under pressure.
-            </motion.p>
+  <motion.h2 
+    className="text-3xl font-semibold mb-6"
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: 0.1, duration: 0.5 }}
+  >
+    The Vision Behind ACE TECH HUB
+  </motion.h2>
 
-            <motion.p 
-              className="text-gray-400 mb-8 leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              We pioneered the 'Kinetic Monolith'—a philosophy where foundational
-              code remains as solid as granite while the interface layers remain
-              as adaptable as water. This duality allows our partners to scale
-              without friction.
-            </motion.p>
+  <motion.p 
+    className="text-gray-400 mb-6 leading-relaxed"
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: 0.2, duration: 0.5 }}
+  >
+    My name is Nwabueze Dabeluchukwu, and I'm a technologist with a mission. 
+    I founded ACE TECH HUB because I saw a gap between what businesses needed 
+    and what technology was delivering.
+  </motion.p>
 
-            {/* QUOTE BOX */}
-            <motion.div 
-              className="border-l-4 border-cyan-400 bg-white/5 backdrop-blur p-4 rounded-md text-gray-300 italic"
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              whileHover={{ x: 5 }}
-            >
-              "Architecture is not just about structure; it's about the energy
-              that flows through it."
-            </motion.div>
+  <motion.p 
+    className="text-gray-400 mb-6 leading-relaxed"
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: 0.3, duration: 0.5 }}
+  >
+    Over the years, I've worked with startups, enterprises, and everything in between. 
+    I've seen what works and what doesn't. I've learned that the best solutions aren't 
+    just about the latest technology—they're about understanding people, their challenges, 
+    and their aspirations.
+  </motion.p>
+
+  <motion.p 
+    className="text-gray-400 mb-8 leading-relaxed"
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: 0.4, duration: 0.5 }}
+  >
+    That's why ACE TECH HUB is different. We don't just build websites or write code—we 
+    architect solutions that evolve with your business. We create technology that works 
+    today and grows with you tomorrow. It's not just about being digital; it's about 
+    being resilient, adaptable, and unshakeable.
+  </motion.p>
+
+  {/* QUOTE BOX */}
+  <motion.div 
+    className="border-l-4 border-cyan-400 bg-white/5 backdrop-blur p-4 rounded-md text-gray-300 italic"
+    initial={{ opacity: 0, x: -20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: 0.5, duration: 0.5 }}
+    whileHover={{ x: 5 }}
+  >
+    "Technology is just a tool. It's the vision, the strategy, and the human touch that 
+    makes it truly powerful. That's what we bring to every project."
+  </motion.div>
+</motion.div>
           </motion.div>
         </div>
       </motion.section>

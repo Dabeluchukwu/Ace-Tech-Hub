@@ -183,9 +183,9 @@ export default function Footer() {
           <Link href="/terms" className="hover:text-gray-300 transition">
             Terms of Service
           </Link>
-          <Link href="/cookies" className="hover:text-gray-300 transition">
+          {/* <Link href="/cookies" className="hover:text-gray-300 transition">
             Cookies
-          </Link>
+          </Link> */}
         </div>
       </div>
     </footer>

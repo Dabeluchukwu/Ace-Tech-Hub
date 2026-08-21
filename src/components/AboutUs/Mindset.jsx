@@ -74,10 +74,10 @@ export default function Mindset() {
               className="text-right"
               variants={fadeUp}
             >
-              <p className="text-4xl font-bold text-cyan-400">150+</p>
+              {/* <p className="text-4xl font-bold text-cyan-400">150+</p>
               <p className="text-xs text-gray-400 tracking-wider">
                 COMBINED YEARS OF EXPERTISE
-              </p>
+              </p> */}
             </motion.div>
           </div>
 
@@ -297,7 +297,7 @@ export default function Mindset() {
                 {[
                   "50+ successful projects delivered",
                   "30+ satisfied clients across industries",
-                  "150+ combined years of expertise",
+                  // "150+ combined years of expertise",
                   "24/7 dedicated support",
                 ].map((text, index) => (
                   <motion.div 
@@ -336,7 +336,7 @@ export default function Mindset() {
               {[
                 { value: "50+", label: "Projects" },
                 { value: "30+", label: "Clients" },
-                { value: "150+", label: "Years Expertise" },
+                // { value: "150+", label: "Years Expertise" },
                 { value: "100%", label: "Client Satisfaction" },
               ].map((item, index) => (
                 <motion.div 
