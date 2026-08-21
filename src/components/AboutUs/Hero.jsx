@@ -155,7 +155,7 @@ export default function Hero() {
                 transition={{ duration: 0.5 }}
               >
                 <Image
-                  src="/images/dabimainpiccrop.jpeg"
+                  src="/images/DabiMainPic.jpeg"
                   alt="ACE TECH HUB Founders"
                   fill
                   unoptimized
