@@ -7,6 +7,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   FaTwitter,
   FaLinkedinIn,
@@ -24,9 +25,19 @@ export default function Footer() {
         
         {/* LEFT BRAND */}
         <div>
-          <h2 className="text-white font-semibold text-xl mb-4 tracking-wide">
-            ACE <span className="text-cyan-400">TECH</span> HUB
-          </h2>
+          <Link href="/" className="flex items-center gap-3 mb-4">
+            <div className="relative w-10 h-10">
+              <Image
+                src="/images/AceLogoFour.jpg"
+                alt="ACE TECH HUB Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <h2 className="text-white font-semibold text-xl tracking-wide">
+              ACE <span className="text-cyan-400">TECH</span> HUB
+            </h2>
+          </Link>
 
           <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
             Your Partner in Digital Innovation. Shaping the future through 
@@ -183,9 +194,6 @@ export default function Footer() {
           <Link href="/terms" className="hover:text-gray-300 transition">
             Terms of Service
           </Link>
-          {/* <Link href="/cookies" className="hover:text-gray-300 transition">
-            Cookies
-          </Link> */}
         </div>
       </div>
     </footer>

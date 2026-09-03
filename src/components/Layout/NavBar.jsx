@@ -1,9 +1,10 @@
 "use client";
 
-import { Monitor, Menu, X, LayoutDashboard } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -51,13 +52,21 @@ export default function Navbar() {
         ${scrolled ? "shadow-lg shadow-black/30" : ""}
         `}
       >
-        {/* LOGO */}
+        {/* LOGO with Image */}
         <Link
           href={isAdminPage ? "/admin/dashboard" : "/"}
-          className="flex items-center gap-2"
+          className="flex items-center gap-3"
         >
-          <Monitor className="w-5 h-5 text-cyan-400" />
-          <span className="text-white font-semibold tracking-wide">
+          <div className="relative w-10 h-10 md:w-12 md:h-12">
+            <Image
+              src="/images/AceLogoFour.jpg"
+              alt="ACE TECH HUB Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+          <span className="text-white font-semibold tracking-wide text-lg md:text-xl">
             ACE TECH <span className="text-cyan-400">HUB</span>
           </span>
           {isLoggedIn && isAdminPage && (
