@@ -31,6 +31,7 @@ export default function Footer() {
                 src="/images/AceLogoFour.jpg"
                 alt="ACE TECH HUB Logo"
                 fill
+                 unoptimized
                 className="object-contain"
               />
             </div>
