@@ -13,7 +13,7 @@ export function InstallPrompt() {
   const [hasBeenDismissed, setHasBeenDismissed] = useState(false);
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
-  const [userHasInteracted, setUserHasInteracted] = useState(false);
+  const [hasNativePrompt, setHasNativePrompt] = useState(false);
 
   useEffect(() => {
     // Check if already installed/standalone
@@ -39,39 +39,11 @@ export function InstallPrompt() {
       return;
     }
 
-    // Listen for user engagement
-    const handleUserInteraction = () => {
-      setUserHasInteracted(true);
-      // Show prompt after user interaction
-      setTimeout(() => {
-        setShowPrompt(true);
-      }, 1000);
-    };
-
-    // Listen for scroll as engagement
-    const handleScroll = () => {
-      if (!userHasInteracted) {
-        setUserHasInteracted(true);
-        setTimeout(() => {
-          setShowPrompt(true);
-        }, 1000);
-      }
-    };
-
-    // Listen for click as engagement
-    document.addEventListener('click', handleUserInteraction);
-    document.addEventListener('scroll', handleScroll);
-
-    // Show prompt after 5 seconds even without interaction (as fallback)
+    // Show prompt after delay if not installed
     const timer = setTimeout(() => {
       setShowPrompt(true);
-    }, 5000);
-
-    return () => {
-      document.removeEventListener('click', handleUserInteraction);
-      document.removeEventListener('scroll', handleScroll);
-      clearTimeout(timer);
-    };
+    }, 3000);
+    return () => clearTimeout(timer);
   }, []);
 
   // Handle Android install prompt
@@ -79,9 +51,9 @@ export function InstallPrompt() {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      setHasNativePrompt(true);
       console.log('✅ Native install prompt available!');
-      
-      // Show the prompt immediately when the event fires
+      // ✅ Show the prompt immediately when the event fires
       setShowPrompt(true);
     };
 
@@ -91,15 +63,34 @@ export function InstallPrompt() {
     };
   }, []);
 
+  // ✅ Listen for app installed event
+  useEffect(() => {
+    const handleAppInstalled = () => {
+      console.log('✅ App was installed successfully!');
+      setShowPrompt(false);
+      localStorage.setItem('installPromptDismissed', 'true');
+      setIsInstalled(true);
+    };
+
+    window.addEventListener('appinstalled', handleAppInstalled);
+    return () => {
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
   const handleInstall = async () => {
     if (deferredPrompt) {
-      // Android - use the native prompt
+      // ✅ Android/Chrome - use the native prompt
+      console.log('📱 Using native install prompt');
       deferredPrompt.prompt();
       const result = await deferredPrompt.userChoice;
       if (result.outcome === 'accepted') {
+        console.log('✅ User accepted the install');
         setShowPrompt(false);
         localStorage.setItem('installPromptDismissed', 'true');
         setIsInstalled(true);
+      } else {
+        console.log('❌ User declined the install');
       }
       setDeferredPrompt(null);
     } else if (isIOS) {
@@ -107,7 +98,7 @@ export function InstallPrompt() {
       setShowIOSInstructions(true);
     } else {
       // For other platforms or when deferredPrompt is null
-      // Check if we're in a PWA-capable browser
+      // Try to show the iOS instructions as a fallback
       setShowIOSInstructions(true);
     }
   };
@@ -178,7 +169,7 @@ export function InstallPrompt() {
         )}
       </AnimatePresence>
 
-      {/* iOS Instructions Modal - Same as before */}
+      {/* iOS Instructions Modal */}
       <AnimatePresence>
         {showIOSInstructions && (
           <motion.div
@@ -216,6 +207,7 @@ export function InstallPrompt() {
               </div>
 
               {isIOS ? (
+                // iOS Instructions
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-bold border border-cyan-500/30">
@@ -266,6 +258,7 @@ export function InstallPrompt() {
                   </div>
                 </div>
               ) : (
+                // Desktop/Android Instructions (when deferredPrompt is null)
                 <div className="space-y-4">
                   <p className="text-gray-400 text-sm">
                     To install this app on your device:
@@ -284,6 +277,11 @@ export function InstallPrompt() {
                       <span>Follow the on-screen instructions</span>
                     </li>
                   </ul>
+                  <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                    <p className="text-xs text-yellow-400">
+                      💡 Tip: The "Install App" option may appear in your browser's address bar
+                    </p>
+                  </div>
                 </div>
               )}
 
